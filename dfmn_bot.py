@@ -50,7 +50,8 @@ def lower_bound_handler(message):
 		dfmn_bot.register_next_step_handler(sent_message, upper_bound_handler, lower_bound)
 	except ValueError:
 		text = f'{num_str} is not a valid integer. Please try again'
-		dfmn_bot.send_message(message.chat.id, text)
+		error_message = dfmn_bot.send_message(message.chat.id, text)
+		dfmn_bot.register_next_step_handler(error_message, lower_bound_handler)
 	
 
 def upper_bound_handler(message, lower_bound):
@@ -61,8 +62,8 @@ def upper_bound_handler(message, lower_bound):
 		dfmn_bot.send_message(message.chat.id, rand_int_str)
 	except ValueError:
 		text = f'{num_str} is not a valid integer. Please try again'
-		dfmn_bot.send_message(message.chat.id, text)
-		dfmn_bot.register_next_step_handler(message, lower_bound_handler)
+		error_message = dfmn_bot.send_message(message.chat.id, text)
+		dfmn_bot.register_next_step_handler(error_message, upper_bound_handler, lower_bound)
 
 
 @dfmn_bot.message_handler(commands=['dice'])
