@@ -1,7 +1,7 @@
 import os
 import telebot
 from dotenv import load_dotenv
-from Decider import Decider
+from random_utils import *
 
 load_dotenv()
 
@@ -17,53 +17,20 @@ def send_welcome(message):
 
 @dfmn_bot.message_handler(commands=['decide'])
 def make_decision(message):
-	text = "Please input at least 1 option or multiple options separated by commas"
-	sent_message = dfmn_bot.reply_to(message, text)
-	dfmn_bot.register_next_step_handler(sent_message, options_handler)
+	Decider(dfmn_bot, message.chat.id).decide()
+	
 	
 
-def options_handler(message):
-	options = message.text
-	decision = Decider.choose_options(options)
-	dfmn_bot.reply_to(message, decision)
-	
-
-@dfmn_bot.message_handler(commands=['coinflip'])
+@dfmn_bot.message_handler(commands=['coin'])
 def coin_flip(message):
-	choice = Decider.coin_flip()
-	dfmn_bot.reply_to(message, choice)
+	CoinFlipper.flip(dfmn_bot, message.chat.id)
 	
+
 
 @dfmn_bot.message_handler(commands=['number'])
 def generate_random_number(message):
-	text = 'Enter lower bound'
-	sent_message = dfmn_bot.send_message(message.chat.id, text)
-	dfmn_bot.register_next_step_handler(sent_message, lower_bound_handler)
-		
+	RandomNumberGenerator(dfmn_bot, message.chat.id).generate()
 
-def lower_bound_handler(message):
-	num_str = message.text.strip()
-	try:
-		lower_bound = int(num_str)
-		text = 'Enter upper bound'
-		sent_message = dfmn_bot.send_message(message.chat.id, text)
-		dfmn_bot.register_next_step_handler(sent_message, upper_bound_handler, lower_bound)
-	except ValueError:
-		text = f'{num_str} is not a valid integer. Please try again'
-		error_message = dfmn_bot.send_message(message.chat.id, text)
-		dfmn_bot.register_next_step_handler(error_message, lower_bound_handler)
-	
-
-def upper_bound_handler(message, lower_bound):
-	num_str = message.text.strip()
-	try:
-		upper_bound = int(num_str)
-		rand_int_str = Decider.generate_rand_int(lower_bound, upper_bound)
-		dfmn_bot.send_message(message.chat.id, rand_int_str)
-	except ValueError:
-		text = f'{num_str} is not a valid integer. Please try again'
-		error_message = dfmn_bot.send_message(message.chat.id, text)
-		dfmn_bot.register_next_step_handler(error_message, upper_bound_handler, lower_bound)
 
 
 @dfmn_bot.message_handler(commands=['dice'])
