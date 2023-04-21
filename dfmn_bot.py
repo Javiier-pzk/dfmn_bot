@@ -2,7 +2,7 @@ import os
 import telebot
 from dotenv import load_dotenv
 from random_utils import *
-from utils import *
+from constants import *
 from suggester import Recommender
 
 load_dotenv()

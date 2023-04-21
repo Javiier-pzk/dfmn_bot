@@ -1,7 +1,7 @@
 from telebot import TeleBot
 from telebot.types import Message
 from telebot.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
-from utils import *
+from constants import *
 import os
 import requests
 
