@@ -31,6 +31,10 @@ KEYWORD = 'keyword'
 LOCATION = 'location'
 RADIUS = 'radius'
 OPEN_NOW = 'opennow'
+DECISION_STR = 'The decision is: '
+OUTCOME_STR = 'The outcome is: '
+RAND_INT_STR = 'The random number is: '
+INVALID_INT_MESSAGE = 'Invalid integer. Please try again.'
 UNKNOWN_COMMAND_MESSAGE = """
 I'm sorry, I do not understand this command. Here are some commands you can try:
 
@@ -40,21 +44,3 @@ I'm sorry, I do not understand this command. Here are some commands you can try:
 ➡️ /dice -> Roll a die
 ➡️ /suggest -> Get suggestions on places/restaurants/eateries
 """
-
-class TextUtils:
-
-	@staticmethod
-	def get_invalid_int_message(invalid_int: str) -> str:
-		return f'{invalid_int} is not a valid integer. Please try again.'
-	
-	@staticmethod
-	def get_decision_str(decision: str) -> str:
-		return f'The decision is: {decision}.'
-
-	@staticmethod
-	def get_outcome_str(outcome: str) -> str:
-		return f'The outcome is: {outcome}.'
-	
-	@staticmethod
-	def get_rand_int_str(rand_int: str|int) -> str:
-		return f'The random number is: {rand_int}'
