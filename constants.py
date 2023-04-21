@@ -47,14 +47,9 @@ Here are some things I can do:
 {COMMANDS}
 You can find these commands in the menu button below as well!
 """
-UNKNOWN_COMMAND_MESSAGE = """
+UNKNOWN_COMMAND_MESSAGE = f"""
 I'm sorry, I do not understand this command. Here are some commands you can try:
-
-➡️ /decide -> Make a random decision
-➡️ /coin -> Flip a coin
-➡️ /rng -> Generate a random number between 2 integers of your choice
-➡️ /dice -> Roll a die
-➡️ /suggest -> Get suggestions on places/restaurants/eateries
+{COMMANDS}
 """
 BOT_DESC = """
 Hello 👋, I am tootiebot 🤖! 
