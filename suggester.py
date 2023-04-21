@@ -1,13 +1,15 @@
 from telebot import TeleBot
-from telebot.types import Message
-from telebot.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InputMediaPhoto
 from constants import *
 import os
 import requests
+from PIL import Image
+from io import BytesIO
 
 class Recommender:
 	
-	GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+	NEARBY_PLACES_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+	PLACES_URL = 'https://maps.googleapis.com/maps/api/place/photo'
 
 	def __init__(self, bot:TeleBot, chat_id: str):
 		self.bot = bot
@@ -17,6 +19,7 @@ class Recommender:
 		self.longitude = None
 		self.radius = None
 		self.is_open = None
+		self.api_key = os.getenv(API_KEY_VAR_NAME)
 	
 	def recommend(self):
 		keyboard = ReplyKeyboardMarkup(row_width=2)
@@ -59,22 +62,58 @@ class Recommender:
 	def is_open_handler(self, message: Message):
 		self.is_open = True if message.text == YES_TEXT else False
 		self.send_nearby_places_request()
-		sent_message = self.bot.send_message(
-			self.chat_id, "ok", reply_markup=ReplyKeyboardRemove())
 
 
 	def send_nearby_places_request(self):
-		api_key = os.getenv(API_KEY_VAR_NAME)
 		params = {
-			KEY: api_key,
+			KEY: self.api_key,
 			KEYWORD: self.category,
 			LOCATION: f'{self.latitude},{self.longitude}',
 			RADIUS: self.radius,
 			OPEN_NOW: self.is_open
 		}
-		response = requests.request(GET_REQUEST, Recommender.GOOGLE_MAPS_API_URL, params=params)
-		print(response.text)
-		print(len(response.text))
+		response = requests.request(GET_REQUEST, Recommender.NEARBY_PLACES_URL, params=params)
+		results = response.json().get(RESULTS_KEY)
+		results = sorted(results, key=lambda result: result.get(RATING_KEY), reverse=True)
+		self.bot.send_message(self.chat_id, RECOMMENDATIONS_MESSAGE, reply_markup=ReplyKeyboardRemove())
+		for i, result in enumerate(results[:3]):
+			place_name = result.get(NAME_KEY)
+			self.bot.send_message(self.chat_id, f'{i + 1}. {place_name}')
+			result_lat = result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY)
+			result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
+			self.bot.send_location(self.chat_id, result_lat, result_lng)
+			text = f"""
+			Rating: {result.get(RATING_KEY)}
+			Total user ratings: {result.get(USER_RATINGS_TOTAL_KEY)}
+			Price level: {result.get(PRICE_LEVEL_KEY)}
+			Open now: {result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)}
+			"""
+			photos = result.get(PHOTOS_KEY)
+			if photos:
+				media_photos = self.get_place_photos(result.get(PHOTOS_KEY), text)
+				self.bot.send_media_group(self.chat_id, media_photos)
+				if len(media_photos) > 1:
+					self.bot.send_message(self.chat_id, text)
+			else:
+				self.bot.send_message(self.chat_id, text)
+	
+	def get_place_photos(self, photos: list, text: str):
+			media_photos = []
+			for photo in photos:
+				params = {
+					KEY: self.api_key,
+					PHOTO_REF: photo.get(PHOTO_REF),
+					MAX_HEIGHT: photo.get(HEIGHT),
+					MAX_WIDTH: photo.get(WIDTH)
+				}
+				response = requests.request(GET_REQUEST, Recommender.PLACES_URL, params=params)
+				image = Image.open(BytesIO(response.content))
+				media_photo = InputMediaPhoto(image, caption=text) if len(photos) ==1 else InputMediaPhoto(image)
+				media_photos.append(media_photo)
+			return media_photos
+
+
+
 
 
 

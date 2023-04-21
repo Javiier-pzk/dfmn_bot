@@ -35,6 +35,23 @@ DECISION_STR = 'The decision is: '
 OUTCOME_STR = 'The outcome is: '
 RAND_INT_STR = 'The random number is: '
 INVALID_INT_MESSAGE = 'Invalid integer. Please try again.'
+RESULTS_KEY = 'results'
+RATING_KEY = 'rating'
+NAME_KEY = 'name'
+USER_RATINGS_TOTAL_KEY = 'user_ratings_total'
+PRICE_LEVEL_KEY = 'price_level'
+OPEN_NOW_KEY = 'open_now'
+OPENING_HOURS_KEY = 'opening_hours'
+GEOMETRY_KEY = 'geometry'
+LAT_KEY = 'lat'
+LNG_KEY = 'lng'
+PHOTOS_KEY = 'photos'
+PHOTO_REF = 'photo_reference'
+HEIGHT = 'height'
+WIDTH = 'width'
+MAX_HEIGHT = 'maxheight'
+MAX_WIDTH = 'maxwidth'
+RECOMMENDATIONS_MESSAGE = "Here the top 3 food recommendations near you based on your filters:"
 COMMANDS = f"""
 ➡️ /{DECIDE_COMMAND} -> {DECIDE_COMMAND_DESC}
 ➡️ /{COIN_COMMAND} -> {COIN_COMMAND_DESC}
