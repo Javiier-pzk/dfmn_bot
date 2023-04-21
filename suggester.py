@@ -6,6 +6,8 @@ import os
 import requests
 
 class Recommender:
+	
+	GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
 
 	def __init__(self, bot:TeleBot, chat_id: str):
 		self.bot = bot
@@ -70,7 +72,7 @@ class Recommender:
 			RADIUS: self.radius,
 			OPEN_NOW: self.is_open
 		}
-		response = requests.request(GET_REQUEST, GOOGLE_MAPS_API_URL, params=params)
+		response = requests.request(GET_REQUEST, Recommender.GOOGLE_MAPS_API_URL, params=params)
 		print(response.text)
 		print(len(response.text))
 
