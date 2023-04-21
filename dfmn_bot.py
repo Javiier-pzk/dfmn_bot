@@ -7,8 +7,8 @@ from suggester import Recommender
 
 load_dotenv()
 commands = [telebot.types.BotCommand(DECIDE_COMMAND, DECIDE_COMMAND_DESC),
+	      	telebot.types.BotCommand(COIN_COMMAND,COIN_COMMAND_DESC),
 	        telebot.types.BotCommand(RNG_COMMAND, RNG_COMMAND_DESC),
-	        telebot.types.BotCommand(COIN_COMMAND,COIN_COMMAND_DESC),
 			telebot.types.BotCommand(DICE_COMMAND, DICE_COMMAND_DESC),
 			telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC)
 			]
@@ -16,6 +16,11 @@ commands = [telebot.types.BotCommand(DECIDE_COMMAND, DECIDE_COMMAND_DESC),
 bot_token = os.getenv(BOT_TOKEN_VAR_NAME)
 dfmn_bot = telebot.TeleBot(bot_token)
 dfmn_bot.set_my_commands(commands)
+dfmn_bot.set_my_description(BOT_DESC)
+
+@dfmn_bot.message_handler(commands=[START_COMMAND])
+def send_start_message(message):
+	dfmn_bot.send_message(message.chat.id, START_MESSAGE)
 
 
 @dfmn_bot.message_handler(commands=[DECIDE_COMMAND])
@@ -31,7 +36,6 @@ def flip_coin(message):
 @dfmn_bot.message_handler(commands=[RNG_COMMAND])
 def generate_random_number(message):
 	RandomNumberGenerator(dfmn_bot, message.chat.id).generate()
-
 
 
 @dfmn_bot.message_handler(commands=[DICE_COMMAND])

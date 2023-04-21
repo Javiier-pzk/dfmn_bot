@@ -35,6 +35,18 @@ DECISION_STR = 'The decision is: '
 OUTCOME_STR = 'The outcome is: '
 RAND_INT_STR = 'The random number is: '
 INVALID_INT_MESSAGE = 'Invalid integer. Please try again.'
+COMMANDS = f"""
+➡️ /{DECIDE_COMMAND} -> {DECIDE_COMMAND_DESC}
+➡️ /{COIN_COMMAND} -> {COIN_COMMAND_DESC}
+➡️ /{RNG_COMMAND} -> {RNG_COMMAND_DESC}
+➡️ /{DICE_COMMAND} -> {DICE_COMMAND_DESC}
+➡️ /{SUGGEST_COMMAND} -> {SUGGEST_COMMAND_DESC}
+"""
+START_MESSAGE = f"""
+Here are some things I can do:
+{COMMANDS}
+You can find these commands in the menu button below as well!
+"""
 UNKNOWN_COMMAND_MESSAGE = """
 I'm sorry, I do not understand this command. Here are some commands you can try:
 
@@ -43,4 +55,8 @@ I'm sorry, I do not understand this command. Here are some commands you can try:
 ➡️ /rng -> Generate a random number between 2 integers of your choice
 ➡️ /dice -> Roll a die
 ➡️ /suggest -> Get suggestions on places/restaurants/eateries
+"""
+BOT_DESC = """
+Hello 👋, I am tootiebot 🤖! 
+Press the start button to see what I can do!
 """
