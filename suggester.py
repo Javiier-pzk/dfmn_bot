@@ -82,12 +82,7 @@ class Recommender:
 			result_lat = result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY)
 			result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
 			self.bot.send_location(self.chat_id, result_lat, result_lng)
-			text = f"""
-			Rating: {result.get(RATING_KEY)}
-			Total user ratings: {result.get(USER_RATINGS_TOTAL_KEY)}
-			Price level: {result.get(PRICE_LEVEL_KEY)}
-			Open now: {result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)}
-			"""
+			text = f'Rating: {result.get(RATING_KEY)}\nTotal user ratings: {result.get(USER_RATINGS_TOTAL_KEY)}\nPrice level: {result.get(PRICE_LEVEL_KEY)}\nOpen now: {result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)}'
 			photos = result.get(PHOTOS_KEY)
 			if photos:
 				media_photos = self.get_place_photos(result.get(PHOTOS_KEY), text)
