@@ -2,7 +2,7 @@ START_COMMAND = 'start'
 RNG_COMMAND = 'rng'
 DECIDE_COMMAND = 'decide'
 SUGGEST_COMMAND = 'suggest'
-BOT_TOKEN = 'BOT_TOKEN'
+BOT_TOKEN_VAR_NAME = 'BOT_TOKEN'
 COIN_COMMAND = 'coin'
 DICE_COMMAND = 'dice'
 OPTIONS_TEXT = 'Please input options. Separate multiple options by commas.'
@@ -10,6 +10,23 @@ LOWER_BOUND_TEXT = 'Enter lower bound (integer)'
 UPPER_BOUND_TEXT = 'Enter upper bound (integer)'
 COIN_FLIP_CHOICES = ['heads', 'tails']
 COMMA = ','
+FOOD_TEXT = 'Food'
+PLACES_TEXT = 'Places'
+CATEGORY_TEXT = 'Please select category'
+LOCATION_TEXT = 'Please share your location.'
+RADIUS_TEXT = 'Please select search radius'
+KM = ' KM'
+IS_OPEN_TEXT = 'Do you want to only search for places that are currently open?'
+YES_TEXT = 'Yes'
+NO_TEXT = 'No'
+API_KEY_VAR_NAME = 'API_KEY'
+GOOGLE_MAPS_API_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
+GET_REQUEST = 'GET'
+KEY = 'key'
+KEYWORD = 'keyword'
+LOCATION = 'location'
+RADIUS = 'radius'
+OPEN_NOW = 'open_now'
 
 class TextUtils:
 
@@ -48,5 +65,6 @@ class TextUtils:
 	def get_outcome_str(outcome: str) -> str:
 		return f'The outcome is: {outcome}.'
 	
+	@staticmethod
 	def get_rand_int_str(rand_int: str|int) -> str:
 		return f'The random number is: {rand_int}'

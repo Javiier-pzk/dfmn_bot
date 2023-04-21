@@ -3,10 +3,12 @@ import telebot
 from dotenv import load_dotenv
 from random_utils import *
 from utils import *
+from suggester import Recommender
 
 load_dotenv()
 
-dfmn_bot = telebot.TeleBot(os.getenv(BOT_TOKEN))
+bot_token = os.getenv(BOT_TOKEN_VAR_NAME)
+dfmn_bot = telebot.TeleBot(bot_token)
 
 @dfmn_bot.message_handler(commands=[START_COMMAND])
 def make_decision(message):
@@ -36,6 +38,11 @@ def generate_random_number(message):
 def send_dice(message):
 	dfmn_bot.send_dice(message.chat.id)
 
+
+@dfmn_bot.message_handler(commands=[SUGGEST_COMMAND])
+def suggest(message):
+	Recommender(dfmn_bot, message.chat.id).recommend()
+	
 
 @dfmn_bot.message_handler(commands=['location'])
 def get_location(message):
