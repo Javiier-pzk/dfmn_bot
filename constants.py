@@ -20,8 +20,8 @@ PLACES_TEXT = 'Places'
 CATEGORY_TEXT = 'Please select category'
 LOCATION_TEXT = 'Please share your location.'
 RADIUS_TEXT = 'Please select search radius'
-KM = ' KM'
-IS_OPEN_TEXT = 'Do you want to only search for places that are currently open?'
+KM = ' Km'
+ONLY_OPEN_TEXT = 'Do you want to only search for places that are currently open?'
 YES_TEXT = 'Yes'
 NO_TEXT = 'No'
 API_KEY_VAR_NAME = 'API_KEY'
@@ -51,19 +51,22 @@ HEIGHT = 'height'
 WIDTH = 'width'
 MAX_HEIGHT = 'maxheight'
 MAX_WIDTH = 'maxwidth'
-RECOMMENDATIONS_MESSAGE = "Here the top 3 food recommendations near you based on your filters:"
+NUM_REC_MESSAGE = 'How many recommendations do you want to see?'
+RECOMMENDATIONS_MESSAGE = "Here the top {num_rec} food recommendations near you based on your filters:"
 PLACE_ID_KEY = 'place_id'
 VICINITY_KEY = 'vicinity'
 BUSINESS_STATUS_KEY = 'business_status'
 OPERATIONAL = 'OPERATIONAL'
-RATING_TEXT = 'Rating:'
-USER_RATINGS_TOTAL_TEXT = 'Total user ratings:'
-PRICE_LEVEL_TEXT = 'Price level:'
-OPEN_NOW_TEXT = 'Open now:'
 INVALID_CATEGORY_MESSAGE = 'Invalid category. Please try again.'
 INVALID_LOCATION_MESSAGE = 'Invalid location. Please try again.'
 INVALID_RADIUS_MESSAGE = 'Invalid search radius. Please try again.'
-INVALID_IS_OPEN_MESSAGE = 'Invalid input. Please try again.'
+INVALID_ONLY_OPEN_MESSAGE = 'Invalid input. Please try again.'
+DOLLAR_SIGN = '$'
+PICK_RANDOM_RECOMMENDATIONS_MESSAGE = 'Do you want me to pick a random option for you?'
+PICK_FOR_ME_TEXT = "Yes, pick for me!"
+PICK_MYSELF_TEXT = "No, I'll pick myself!"
+BOT_RECOMMENDATION_MESSAGE = 'My recommendation is:'
+SIGN_OFF_TEXT = 'Alright! Have a nice day 👋'
 COMMANDS = f"""
 ➡️ /{DECIDE_COMMAND} -> {DECIDE_COMMAND_DESC}
 ➡️ /{COIN_COMMAND} -> {COIN_COMMAND_DESC}
@@ -71,6 +74,13 @@ COMMANDS = f"""
 ➡️ /{DICE_COMMAND} -> {DICE_COMMAND_DESC}
 ➡️ /{SUGGEST_COMMAND} -> {SUGGEST_COMMAND_DESC}
 """
+RECOMMENDATIONS_TEXT = """
+Rating: {rating}
+Total user ratings: {user_ratings_total}
+Price level: {price_level}
+Open now: {open_now}
+"""
+PLACE_NAME = '{index}. {name}'
 START_MESSAGE = f"""
 Here are some things I can do:
 {COMMANDS}
