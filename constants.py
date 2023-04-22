@@ -1,26 +1,36 @@
 START_COMMAND = 'start'
 RNG_COMMAND = 'rng'
-RNG_COMMAND_DESC = 'Generate a random number between 2 integers of your choice'
+RNG_COMMAND_DESC = 'Generate a random number between 2 integers of your choice.'
 DECIDE_COMMAND = 'decide'
-DECIDE_COMMAND_DESC = 'Make a random decision'
+DECIDE_COMMAND_DESC = 'Make a random decision.'
 SUGGEST_COMMAND = 'suggest'
-SUGGEST_COMMAND_DESC = 'Get suggestions on places/restaurants/eateries'
+SUGGEST_COMMAND_DESC = 'Get suggestions on food/malls/entertainment etc.'
 BOT_TOKEN_VAR_NAME = 'BOT_TOKEN'
 COIN_COMMAND = 'coin'
-COIN_COMMAND_DESC = 'Flip a coin'
+COIN_COMMAND_DESC = 'Flip a coin.'
 DICE_COMMAND = 'dice'
-DICE_COMMAND_DESC = 'Roll a die'
+DICE_COMMAND_DESC = 'Roll a die.'
 OPTIONS_TEXT = 'Please input options. Separate multiple options by commas.'
 LOWER_BOUND_TEXT = 'Enter lower bound (integer)'
 UPPER_BOUND_TEXT = 'Enter upper bound (integer)'
 COIN_FLIP_CHOICES = ['heads', 'tails']
 COMMA = ','
 FOOD_TEXT = 'Food'
+RESTAURANTS_TEXT = 'Restaurants'
+COFFEE_SHOPS_TEXT = 'Coffee shops'
+HAWKER_CENTRES_TEXT = 'Hawker centres'
+PARKS_TEXT = 'Parks and nature reserves'
+FITNESS_AREAS = 'Fitness areas'
 PLACES_TEXT = 'Places'
-CATEGORY_TEXT = 'Please select category'
+COFFEE_TEXT = 'Coffee'
+MALLS_TEXT = 'Shopping malls'
+ENTERTAINMENT_TEXT = 'Entertainment'
+TOURIST_ATTRACTIONS_TEXT = 'Tourist attractions'
+
+CATEGORY_TEXT = "Please select a suggested category below or enter in your own category. For example, 'Indian Food'"
 LOCATION_TEXT = 'Please share your location.'
 RADIUS_TEXT = 'Please select search radius'
-KM = ' Km'
+KM = ' km'
 ONLY_OPEN_TEXT = 'Do you want to only search for places that are currently open?'
 YES_TEXT = 'Yes'
 NO_TEXT = 'No'
@@ -52,7 +62,8 @@ WIDTH = 'width'
 MAX_HEIGHT = 'maxheight'
 MAX_WIDTH = 'maxwidth'
 NUM_REC_MESSAGE = 'How many recommendations do you want to see?'
-RECOMMENDATIONS_MESSAGE = "Here the top {num_rec} food recommendations near you based on your filters:"
+ZERO_RECOMMENDATIONS_MESSAGE = 'Sorry, I am unable to find any recommendations that fit your criteria 😕'
+RECOMMENDATIONS_MESSAGE = "Here the top {num_rec} {category} recommendations near you based on your filters:"
 PLACE_ID_KEY = 'place_id'
 VICINITY_KEY = 'vicinity'
 BUSINESS_STATUS_KEY = 'business_status'
@@ -68,11 +79,11 @@ PICK_MYSELF_TEXT = "No, I'll pick myself!"
 BOT_RECOMMENDATION_MESSAGE = 'My recommendation is:'
 SIGN_OFF_TEXT = 'Alright! Have a nice day 👋'
 COMMANDS = f"""
+➡️ /{SUGGEST_COMMAND} -> {SUGGEST_COMMAND_DESC}
 ➡️ /{DECIDE_COMMAND} -> {DECIDE_COMMAND_DESC}
 ➡️ /{COIN_COMMAND} -> {COIN_COMMAND_DESC}
 ➡️ /{RNG_COMMAND} -> {RNG_COMMAND_DESC}
 ➡️ /{DICE_COMMAND} -> {DICE_COMMAND_DESC}
-➡️ /{SUGGEST_COMMAND} -> {SUGGEST_COMMAND_DESC}
 """
 RECOMMENDATIONS_TEXT = """
 Rating: {rating}

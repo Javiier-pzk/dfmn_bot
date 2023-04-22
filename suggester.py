@@ -26,9 +26,11 @@ class Recommender:
 
 	def recommend(self):
 		keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-		food_option = KeyboardButton(FOOD_TEXT)
-		places_option = KeyboardButton(PLACES_TEXT)
-		keyboard.add(food_option, places_option)
+		categories = [FOOD_TEXT, RESTAURANTS_TEXT, COFFEE_SHOPS_TEXT,
+			HAWKER_CENTRES_TEXT, COFFEE_TEXT, MALLS_TEXT, 
+			ENTERTAINMENT_TEXT, TOURIST_ATTRACTIONS_TEXT, PARKS_TEXT, FITNESS_AREAS]
+		buttons = [KeyboardButton(category) for category in categories]
+		keyboard.add(*buttons)
 
 		sent_message = self.bot.send_message(
 			self.chat_id, CATEGORY_TEXT, reply_markup=keyboard)
@@ -36,11 +38,6 @@ class Recommender:
 	
 
 	def category_handler(self, message: Message):
-		accepted_values = set([FOOD_TEXT, PLACES_TEXT])
-		if message.text not in accepted_values:
-			error_message = self.bot.reply_to(message, INVALID_CATEGORY_MESSAGE)
-			self.bot.register_next_step_handler(error_message, self.category_handler)
-			return
 		self.category = message.text
 		sent_message = self.bot.send_message(
 			self.chat_id, LOCATION_TEXT, reply_markup=ReplyKeyboardRemove())
@@ -111,8 +108,12 @@ class Recommender:
 		results = response.json().get(RESULTS_KEY)
 		results = filter(lambda x: x.get(BUSINESS_STATUS_KEY) == OPERATIONAL, results)
 		results = sorted(results, key=lambda result: result.get(RATING_KEY), reverse=True)
+		if not results:
+			self.bot.send_message(self.chat_id, ZERO_RECOMMENDATIONS_MESSAGE)
 		self.bot.send_message(self.chat_id, 
-			RECOMMENDATIONS_MESSAGE.format(num_rec=self.num_rec),
+			RECOMMENDATIONS_MESSAGE.format(
+				num_rec=min(self.num_rec, len(results)),
+				category=self.category.lower()),
 			reply_markup=ReplyKeyboardRemove())
 		for i, result in enumerate(results[:self.num_rec]):
 			self.send_recommendation(i, result)
@@ -171,7 +172,7 @@ class Recommender:
 		accepted_values = set([PICK_FOR_ME_TEXT, PICK_MYSELF_TEXT])
 		if message.text not in accepted_values:
 			error_message = self.bot.reply_to(message, INVALID_ONLY_OPEN_MESSAGE)
-			self.bot.register_next_step_handler(error_message, self.decision_handler)
+			self.bot.register_next_step_handler(error_message, self.decision_handler, results)
 			return
 		if message.text == PICK_MYSELF_TEXT:
 			self.bot.send_message(self.chat_id,
