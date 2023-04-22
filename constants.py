@@ -52,6 +52,18 @@ WIDTH = 'width'
 MAX_HEIGHT = 'maxheight'
 MAX_WIDTH = 'maxwidth'
 RECOMMENDATIONS_MESSAGE = "Here the top 3 food recommendations near you based on your filters:"
+PLACE_ID_KEY = 'place_id'
+VICINITY_KEY = 'vicinity'
+BUSINESS_STATUS_KEY = 'business_status'
+OPERATIONAL = 'OPERATIONAL'
+RATING_TEXT = 'Rating:'
+USER_RATINGS_TOTAL_TEXT = 'Total user ratings:'
+PRICE_LEVEL_TEXT = 'Price level:'
+OPEN_NOW_TEXT = 'Open now:'
+INVALID_CATEGORY_MESSAGE = 'Invalid category. Please try again.'
+INVALID_LOCATION_MESSAGE = 'Invalid location. Please try again.'
+INVALID_RADIUS_MESSAGE = 'Invalid search radius. Please try again.'
+INVALID_IS_OPEN_MESSAGE = 'Invalid input. Please try again.'
 COMMANDS = f"""
 ➡️ /{DECIDE_COMMAND} -> {DECIDE_COMMAND_DESC}
 ➡️ /{COIN_COMMAND} -> {COIN_COMMAND_DESC}
