@@ -1,3 +1,4 @@
+STATUS_OK = 'OK'
 START_COMMAND = 'start'
 RNG_COMMAND = 'rng'
 RNG_COMMAND_DESC = 'Generate a random number between 2 integers of your choice.'

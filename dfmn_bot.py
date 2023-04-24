@@ -30,6 +30,7 @@ def handle_updates():
     update = telebot.types.Update.de_json(request.stream.read().decode())
     dfmn_bot.process_new_updates([update])
     time.sleep(0.1)
+    return 200, STATUS_OK
 
 
 @dfmn_bot.message_handler(commands=[START_COMMAND])
