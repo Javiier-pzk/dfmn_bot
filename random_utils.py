@@ -1,4 +1,4 @@
-import random
+from random import choice, randint
 from telebot import TeleBot
 from telebot.types import Message
 from constants import *
@@ -15,19 +15,16 @@ class Decider:
 	
 	def options_handler(self, message: Message):
 		options = message.text.split(COMMA)
-		weights = [1 / len(options)] * len(options)
-		decision = random.choices(options, weights=weights, k=1)
-		self.bot.reply_to(message, DECISION_STR + decision[0].strip())
+		decision = choice(options)
+		self.bot.reply_to(message, DECISION_STR + decision)
 
 
 class CoinFlipper:
 
 	@staticmethod
 	def flip(bot: TeleBot, chat_id: str):
-		choices = COIN_FLIP_CHOICES
-		weights = [1 / len(choices)] * len(choices)
-		outcome = random.choices(choices, weights=weights, k=1)
-		bot.send_message(chat_id, OUTCOME_STR + outcome[0].strip())
+		outcome = choice(COIN_FLIP_CHOICES)
+		bot.send_message(chat_id, OUTCOME_STR + outcome)
 
 
 class RandomNumberGenerator:
@@ -55,7 +52,7 @@ class RandomNumberGenerator:
 		num_str = message.text.strip()
 		try:
 			upper_bound = int(num_str)
-			rand_int = random.randint(lower_bound, upper_bound)
+			rand_int = randint(lower_bound, upper_bound)
 			self.bot.send_message(self.chat_id, RAND_INT_STR + str(rand_int))
 		except ValueError:
 			error_message = self.bot.send_message(self.chat_id, INVALID_INT_MESSAGE)
