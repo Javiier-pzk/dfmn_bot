@@ -1,6 +1,5 @@
 import os
 import telebot
-import time
 from dotenv import load_dotenv
 from constants import *
 from suggester import Recommender
@@ -29,7 +28,6 @@ dfmn_bot.set_my_description(BOT_DESC)
 def handle_updates():
     update = telebot.types.Update.de_json(request.stream.read().decode())
     dfmn_bot.process_new_updates([update])
-    time.sleep(0.1)
     return STATUS_OK
 
 
