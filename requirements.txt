@@ -27,7 +27,6 @@ beautifulsoup4==4.11.1
 binaryornot==0.4.4
 black==22.6.0
 bleach==4.1.0
-blosc==1.21.3
 bokeh==2.4.3
 boltons==23.0.0
 bottleneck==1.3.5
