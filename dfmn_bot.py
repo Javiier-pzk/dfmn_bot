@@ -4,18 +4,30 @@ from dotenv import load_dotenv
 from random_utils import *
 from constants import *
 from suggester import Recommender
+from flask import Flask, request
+
+app = Flask(__name__)
 
 load_dotenv()
+BOT_TOKEN = os.getenv(BOT_TOKEN_VAR_NAME)
+WEBHOOK_URL = 'https://dfmn-bot.herokuapp.com/' + BOT_TOKEN
+
 commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
 			telebot.types.BotCommand(DECIDE_COMMAND, DECIDE_COMMAND_DESC),
 	      	telebot.types.BotCommand(COIN_COMMAND,COIN_COMMAND_DESC),
 	        telebot.types.BotCommand(RNG_COMMAND, RNG_COMMAND_DESC),
 			telebot.types.BotCommand(DICE_COMMAND, DICE_COMMAND_DESC)]
 
-bot_token = os.getenv(BOT_TOKEN_VAR_NAME)
-dfmn_bot = telebot.TeleBot(bot_token)
+dfmn_bot = telebot.TeleBot(BOT_TOKEN)
 dfmn_bot.set_my_commands(commands)
 dfmn_bot.set_my_description(BOT_DESC)
+
+
+@app.route('/' + BOT_TOKEN, methods=[POST_REQUEST])
+def init_bot():
+    update = telebot.types.Update.de_json(request.stream.read().decode())
+    dfmn_bot.process_new_updates([update])
+
 
 @dfmn_bot.message_handler(commands=[START_COMMAND])
 def send_start_message(message):
@@ -50,6 +62,10 @@ def suggest(message):
 @dfmn_bot.message_handler(func=lambda m: True)
 def echo_all(message):
 	dfmn_bot.reply_to(message, UNKNOWN_COMMAND_MESSAGE)
-	
 
-dfmn_bot.infinity_polling()
+
+dfmn_bot.set_webhook(url=WEBHOOK_URL)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
