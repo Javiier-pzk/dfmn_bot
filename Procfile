@@ -1,1 +1,1 @@
-web: python dfmn_bot.py
+web: gunicorn main:app

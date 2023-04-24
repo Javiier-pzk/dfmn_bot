@@ -1,9 +1,9 @@
 import os
 import telebot
 from dotenv import load_dotenv
-from random_utils import *
-from constants import *
-from suggester import Recommender
+from app.constants import *
+from app.suggester import Recommender
+from app.random_utils import *
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -21,6 +21,7 @@ commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
 dfmn_bot = telebot.TeleBot(BOT_TOKEN)
 dfmn_bot.set_my_commands(commands)
 dfmn_bot.set_my_description(BOT_DESC)
+dfmn_bot.set_webhook(url=WEBHOOK_URL)
 
 
 @app.route('/' + BOT_TOKEN, methods=[POST_REQUEST])
@@ -62,10 +63,3 @@ def suggest(message):
 @dfmn_bot.message_handler(func=lambda m: True)
 def echo_all(message):
 	dfmn_bot.reply_to(message, UNKNOWN_COMMAND_MESSAGE)
-
-
-dfmn_bot.set_webhook(url=WEBHOOK_URL)
-
-
-if __name__ == '__main__':
-    app.run(debug=True)
