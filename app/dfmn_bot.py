@@ -24,7 +24,6 @@ commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
 dfmn_bot = telebot.TeleBot(BOT_TOKEN)
 dfmn_bot.set_my_commands(commands)
 dfmn_bot.set_my_description(BOT_DESC)
-dfmn_bot.set_webhook(url=WEBHOOK_URL)
 
 
 @app.route('/' + BOT_TOKEN, methods=[POST_REQUEST])
@@ -69,8 +68,6 @@ def echo_all(message):
 	dfmn_bot.reply_to(message, UNKNOWN_COMMAND_MESSAGE)
 
 
-dfmn_bot.run_webhooks(port=PORT, url_path=BOT_TOKEN)
-
-
 if __name__ == '__main__':
-	app.run(host='127.0.0.1', port=PORT)
+	dfmn_bot.set_webhook(url=WEBHOOK_URL)
+	app.run()
