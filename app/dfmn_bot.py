@@ -1,15 +1,17 @@
 import os
 import telebot
+import time
 from dotenv import load_dotenv
-from app.constants import *
-from app.suggester import Recommender
-from app.random_utils import *
+from constants import *
+from suggester import Recommender
+from random_utils import *
 from flask import Flask, request
 
 app = Flask(__name__)
 
 load_dotenv()
 BOT_TOKEN = os.getenv(BOT_TOKEN_VAR_NAME)
+PORT = os.getenv(PORT)
 WEBHOOK_URL = 'https://dfmn-bot.herokuapp.com/' + BOT_TOKEN
 
 commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
@@ -29,6 +31,7 @@ dfmn_bot.set_webhook(url=WEBHOOK_URL)
 def handle_updates():
     update = telebot.types.Update.de_json(request.stream.read().decode())
     dfmn_bot.process_new_updates([update])
+    time.sleep(0.1)
 
 
 @dfmn_bot.message_handler(commands=[START_COMMAND])
@@ -66,4 +69,8 @@ def echo_all(message):
 	dfmn_bot.reply_to(message, UNKNOWN_COMMAND_MESSAGE)
 
 
-dfmn_bot.run_webhooks(port=os.getenv(PORT, 5000), url_path=BOT_TOKEN)
+dfmn_bot.run_webhooks(port=PORT, url_path=BOT_TOKEN)
+
+
+if __name__ == '__main__':
+	app.run(host='127.0.0.1', port=PORT)
