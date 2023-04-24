@@ -26,7 +26,7 @@ dfmn_bot.set_webhook(url=WEBHOOK_URL)
 
 
 @app.route('/' + BOT_TOKEN, methods=[POST_REQUEST])
-def init_bot():
+def handle_updates():
     update = telebot.types.Update.de_json(request.stream.read().decode())
     dfmn_bot.process_new_updates([update])
 
