@@ -18,6 +18,7 @@ commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
 	        telebot.types.BotCommand(RNG_COMMAND, RNG_COMMAND_DESC),
 			telebot.types.BotCommand(DICE_COMMAND, DICE_COMMAND_DESC)]
 
+
 dfmn_bot = telebot.TeleBot(BOT_TOKEN)
 dfmn_bot.set_my_commands(commands)
 dfmn_bot.set_my_description(BOT_DESC)
@@ -63,3 +64,6 @@ def suggest(message):
 @dfmn_bot.message_handler(func=lambda m: True)
 def echo_all(message):
 	dfmn_bot.reply_to(message, UNKNOWN_COMMAND_MESSAGE)
+
+
+dfmn_bot.run_webhooks(port=os.getenv(PORT, 5000), url_path=BOT_TOKEN)
