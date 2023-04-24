@@ -35,7 +35,6 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pycryptodome==3.4.3
 pyparsing==3.0.6
-python==3.10.9
 pyTelegramBotAPI==4.11.0
 python-dotenv==1.0.0
 python-jwt==2.0.1
