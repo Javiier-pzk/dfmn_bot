@@ -104,6 +104,6 @@ I'm sorry, I do not understand this command. Here are some commands you can try:
 {COMMANDS}
 """
 BOT_DESC = """
-Hello 👋, I am tootiebot 🤖! 
+Hello 👋, I am dfmn_bot 🤖! 
 Press the start button to see what I can do!
 """
