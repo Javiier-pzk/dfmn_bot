@@ -59,11 +59,6 @@ def send_dice(message):
 @dfmn_bot.message_handler(commands=[SUGGEST_COMMAND])
 def suggest(message):
 	Recommender(dfmn_bot, message.chat.id).recommend()
-		
-
-@dfmn_bot.message_handler(func=lambda m: True)
-def echo_all(message):
-	dfmn_bot.reply_to(message, UNKNOWN_COMMAND_MESSAGE)
 
 
 if __name__ == '__main__':
