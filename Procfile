@@ -1,1 +1,1 @@
-web: gunicorn app.dfmn_bot:app
+web: gunicorn dfmn_bot:app

@@ -11,7 +11,6 @@ app = Flask(__name__)
 
 load_dotenv()
 BOT_TOKEN = os.getenv(BOT_TOKEN_VAR_NAME)
-PORT = os.getenv(PORT)
 WEBHOOK_URL = 'https://dfmn-bot.herokuapp.com/' + BOT_TOKEN
 
 commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
