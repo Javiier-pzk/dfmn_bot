@@ -110,6 +110,7 @@ class Recommender:
 		results = sorted(results, key=lambda result: result.get(RATING_KEY), reverse=True)
 		if not results:
 			self.bot.send_message(self.chat_id, ZERO_RECOMMENDATIONS_MESSAGE)
+			return
 		self.bot.send_message(self.chat_id, 
 			RECOMMENDATIONS_MESSAGE.format(
 				num_rec=min(self.num_rec, len(results)),
