@@ -23,16 +23,18 @@ class Recommender:
         logging.basicConfig(level=logging.DEBUG)
 
     async def recommend(self):
-        keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-        categories = [FOOD_TEXT, RESTAURANTS_TEXT, COFFEE_SHOPS_TEXT,
-                      HAWKER_CENTRES_TEXT, COFFEE_TEXT, MALLS_TEXT,
-                      ENTERTAINMENT_TEXT, TOURIST_ATTRACTIONS_TEXT, PARKS_TEXT, FITNESS_AREAS]
-        buttons = [KeyboardButton(category) for category in categories]
-        keyboard.add(*buttons)
-        sent_message = self.bot.send_message(self.chat_id, CATEGORY_TEXT, reply_markup=keyboard)
-        await self.bot.register_next_step_handler(sent_message, self.category_handler)
-        logging.info('recommend method completed')
-
+        try:
+            keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+            categories = [FOOD_TEXT, RESTAURANTS_TEXT, COFFEE_SHOPS_TEXT,
+                        HAWKER_CENTRES_TEXT, COFFEE_TEXT, MALLS_TEXT,
+                        ENTERTAINMENT_TEXT, TOURIST_ATTRACTIONS_TEXT, PARKS_TEXT, FITNESS_AREAS]
+            buttons = [KeyboardButton(category) for category in categories]
+            keyboard.add(*buttons)
+            sent_message = self.bot.send_message(self.chat_id, CATEGORY_TEXT, reply_markup=keyboard)
+            await self.bot.register_next_step_handler(sent_message, self.category_handler)
+            logging.info('recommend method completed')
+        except Exception as e:
+            logging.error(e)
 
     async def category_handler(self, message: Message):
         self.category = message.text
