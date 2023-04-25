@@ -36,8 +36,8 @@ def send_start_message(message):
 
 
 @dfmn_bot.message_handler(commands=[DECIDE_COMMAND])
-def make_decision(message):
-	Decider(dfmn_bot, message.chat.id).decide()
+async def make_decision(message):
+	await Decider(dfmn_bot, message.chat.id).decide()
 	
 
 @dfmn_bot.message_handler(commands=[COIN_COMMAND])
@@ -46,8 +46,8 @@ def flip_coin(message):
 	
 
 @dfmn_bot.message_handler(commands=[RNG_COMMAND])
-def generate_random_number(message):
-	RandomNumberGenerator(dfmn_bot, message.chat.id).generate()
+async def generate_random_number(message):
+	await RandomNumberGenerator(dfmn_bot, message.chat.id).generate()
 
 
 @dfmn_bot.message_handler(commands=[DICE_COMMAND])
@@ -56,8 +56,8 @@ def send_dice(message):
 
 
 @dfmn_bot.message_handler(commands=[SUGGEST_COMMAND])
-def suggest(message):
-	Recommender(dfmn_bot, message.chat.id).recommend()
+async def suggest(message):
+	await Recommender(dfmn_bot, message.chat.id).recommend()
 
 
 @app.route('/' + BOT_TOKEN, methods=[POST_REQUEST])
