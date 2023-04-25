@@ -19,7 +19,7 @@ class Recommender:
 		self.radius = None
 		self.only_open = False
 		self.num_rec = None
-		logging.basicConfig(level=logging.INFO)
+		logging.basicConfig(level=logging.DEBUG)
 	
 
 	def recommend(self):
@@ -78,8 +78,8 @@ class Recommender:
 				return
 			self.radius = int(message.text[0]) * 1000
 			sent_message = self.bot.send_message(self.chat_id, NUM_REC_MESSAGE, reply_markup=ReplyKeyboardRemove())
-			self.bot.register_next_step_handler(sent_message, self.num_recommendations_handler)
-			logging.info(f'End of radius handler. Radius: {self.radius}')
+			response = self.bot.register_next_step_handler(sent_message, self.num_recommendations_handler)
+			logging.info(f'End of radius handler. Next handler response: {response}')
 		except Exception as e:
 			logging.error('In recommend method ' + e)
 		
