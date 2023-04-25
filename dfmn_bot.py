@@ -9,8 +9,9 @@ from flask import Flask, request
 app = Flask(__name__)
 
 load_dotenv()
-BOT_TOKEN = os.getenv(BOT_TOKEN_VAR_NAME)
-WEBHOOK_URL = 'https://dfmn-bot.herokuapp.com/' + BOT_TOKEN
+BOT_TOKEN = os.getenv(BOT_TOKEN)
+WEBHOOK_DOMAIN = os.getenv(WEBHOOK_DOMAIN)
+WEBHOOK_URL = WEBHOOK_DOMAIN + BOT_TOKEN
 
 commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
 			telebot.types.BotCommand(DECIDE_COMMAND, DECIDE_COMMAND_DESC),

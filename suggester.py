@@ -8,9 +8,6 @@ from io import BytesIO
 from random import randint
 
 class Recommender:
-	
-	NEARBY_PLACES_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json'
-	PLACES_URL = 'https://maps.googleapis.com/maps/api/place/photo'
 
 	def __init__(self, bot:TeleBot, chat_id: str):
 		self.bot = bot
@@ -21,7 +18,6 @@ class Recommender:
 		self.radius = None
 		self.only_open = False
 		self.num_rec = None
-		self.api_key = os.getenv(API_KEY_VAR_NAME)
 	
 
 	def recommend(self):
@@ -98,13 +94,13 @@ class Recommender:
 
 	def recommendation_handler(self):
 		params = {
-			KEY: self.api_key,
+			KEY: os.getenv(API_KEY),
 			KEYWORD: self.category,
 			LOCATION: f'{self.latitude},{self.longitude}',
 			RADIUS: self.radius,
 			OPEN_NOW: self.only_open
 		}
-		response = requests.request(GET_REQUEST, Recommender.NEARBY_PLACES_URL, params=params)
+		response = requests.request(GET_REQUEST, os.getenv(NEARBY_PLACES_URL), params=params)
 		results = response.json().get(RESULTS_KEY)
 		results = filter(lambda x: x.get(BUSINESS_STATUS_KEY) == OPERATIONAL, results)
 		results = sorted(results, key=lambda result: result.get(RATING_KEY), reverse=True)
@@ -162,7 +158,7 @@ class Recommender:
 					MAX_HEIGHT: photo.get(HEIGHT),
 					MAX_WIDTH: photo.get(WIDTH)
 				}
-				response = requests.request(GET_REQUEST, Recommender.PLACES_URL, params=params)
+				response = requests.request(GET_REQUEST, os.getenv(PLACE_PHOTO_URL), params=params)
 				image = Image.open(BytesIO(response.content))
 				media_photo = InputMediaPhoto(image, caption=text) if len(photos) ==1 else InputMediaPhoto(image)
 				media_photos.append(media_photo)
