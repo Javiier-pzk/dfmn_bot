@@ -7,7 +7,7 @@ from app.constants import *
 from app.suggester import Recommender
 from app.random_utils import *
 from flask import Flask, request
-from collections import Queue
+from queue import Queue
 
 app = Flask(__name__)
 
