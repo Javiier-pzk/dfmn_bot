@@ -16,6 +16,7 @@ BOT_TOKEN = os.getenv(BOT_TOKEN)
 WEBHOOK_DOMAIN = os.getenv(WEBHOOK_DOMAIN)
 WEBHOOK_URL = WEBHOOK_DOMAIN + BOT_TOKEN
 update_queue = Queue()
+logging.basicConfig(level=logging.INFO)
 
 commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
 			telebot.types.BotCommand(DECIDE_COMMAND, DECIDE_COMMAND_DESC),
