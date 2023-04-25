@@ -1,7 +1,7 @@
 from random import choice, randint
 from telebot import TeleBot
 from telebot.types import Message
-from constants import *
+from app.constants import *
 
 class Decider:
 

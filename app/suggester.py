@@ -1,6 +1,6 @@
 from telebot import TeleBot
-from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InputMediaPhoto, InlineKeyboardButton, InlineKeyboardMarkup
-from constants import *
+from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InputMediaPhoto
+from app.constants import *
 import os
 import requests
 from PIL import Image
