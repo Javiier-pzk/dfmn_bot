@@ -62,6 +62,6 @@ def suggest(message):
 	Recommender(dfmn_bot, message.chat.id).recommend()
 
 
-# if __name__ == MAIN_PROGRAM:
-# 	dfmn_bot.set_webhook(url=WEBHOOK_URL)
-# 	app.run()
+if __name__ == MAIN_PROGRAM:
+	dfmn_bot.set_webhook(url=WEBHOOK_URL)
+	app.run()
