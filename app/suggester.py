@@ -112,6 +112,7 @@ class Recommender:
 				num_rec=min(self.num_rec, len(results)),
 				category=self.category.lower()),
 			reply_markup=ReplyKeyboardRemove())
+		print(len(results))
 		for i, result in enumerate(results[:self.num_rec]):
 			self.send_recommendation(i, result)
 		keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -145,6 +146,7 @@ class Recommender:
 			self.bot.send_media_group(self.chat_id, media_photos)
 		if not media_photos or len(media_photos) > 1:
 			self.bot.send_message(self.chat_id, text)
+		print(f"Sent {index}")
 
 
 	def get_place_photos(self, photos: list | None, text: str):
