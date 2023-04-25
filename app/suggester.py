@@ -3,6 +3,7 @@ from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKey
 from app.constants import *
 import os
 import requests
+import logging
 from PIL import Image
 from io import BytesIO
 from random import randint
@@ -18,6 +19,7 @@ class Recommender:
 		self.radius = None
 		self.only_open = False
 		self.num_rec = None
+		logging.basicConfig(level=logging.INFO)
 	
 
 	def recommend(self):
@@ -35,6 +37,7 @@ class Recommender:
 
 	def category_handler(self, message: Message):
 		self.category = message.text
+		logging.info(f'In category handler. Cat: {self.category}')
 		sent_message = self.bot.send_message(
 			self.chat_id, LOCATION_TEXT, reply_markup=ReplyKeyboardRemove())
 		self.bot.register_next_step_handler(sent_message, self.location_handler)
@@ -48,6 +51,7 @@ class Recommender:
 		location = message.location
 		self.latitude = location.latitude
 		self.longitude = location.longitude
+		logging.info(f'In location handler. Lat: {self.latitude}, lng: {self.longitude}')
 		keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
 		buttons = [KeyboardButton(str(i) + KM) for i in range(1, 6)]
 		keyboard.add(*buttons)
@@ -63,6 +67,7 @@ class Recommender:
 			self.bot.register_next_step_handler(error_message, self.radius_handler)
 			return
 		self.radius = int(message.text[0]) * 1000
+		logging.info(f'In radius handler. Radius: {self.radius}')
 		sent_message = self.bot.send_message(self.chat_id, NUM_REC_MESSAGE, reply_markup=ReplyKeyboardRemove())
 		self.bot.register_next_step_handler(sent_message, self.num_recommendations_handler)
 		
@@ -70,6 +75,7 @@ class Recommender:
 	def num_recommendations_handler(self, message: Message):
 		try:
 			self.num_rec = int(message.text)
+			logging.info(f'In num rec handler. Num recs: {self.num_rec}')
 			keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
 			yes_option = KeyboardButton(YES_TEXT)
 			no_option = KeyboardButton(NO_TEXT)
@@ -89,6 +95,7 @@ class Recommender:
 			self.bot.register_next_step_handler(error_message, self.only_open_handler)
 			return
 		self.only_open = True if message.text == YES_TEXT else False
+		logging.info(f'In only open handler. Only open: {self.only_open}')
 		self.recommendation_handler()
 
 
@@ -166,6 +173,7 @@ class Recommender:
 	
 
 	def decision_handler(self, message: Message, results: list):
+		logging.info(f'In decicion handler. Decision: {message.text}')
 		accepted_values = set([PICK_FOR_ME_TEXT, PICK_MYSELF_TEXT])
 		if message.text not in accepted_values:
 			error_message = self.bot.reply_to(message, INVALID_ONLY_OPEN_MESSAGE)
