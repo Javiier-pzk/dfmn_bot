@@ -23,53 +23,65 @@ class Recommender:
 	
 
 	def recommend(self):
-		keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-		categories = [FOOD_TEXT, RESTAURANTS_TEXT, COFFEE_SHOPS_TEXT,
-			HAWKER_CENTRES_TEXT, COFFEE_TEXT, MALLS_TEXT, 
-			ENTERTAINMENT_TEXT, TOURIST_ATTRACTIONS_TEXT, PARKS_TEXT, FITNESS_AREAS]
-		buttons = [KeyboardButton(category) for category in categories]
-		keyboard.add(*buttons)
+		try:
+			keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+			categories = [FOOD_TEXT, RESTAURANTS_TEXT, COFFEE_SHOPS_TEXT,
+				HAWKER_CENTRES_TEXT, COFFEE_TEXT, MALLS_TEXT, 
+				ENTERTAINMENT_TEXT, TOURIST_ATTRACTIONS_TEXT, PARKS_TEXT, FITNESS_AREAS]
+			buttons = [KeyboardButton(category) for category in categories]
+			keyboard.add(*buttons)
 
-		sent_message = self.bot.send_message(
-			self.chat_id, CATEGORY_TEXT, reply_markup=keyboard)
-		self.bot.register_next_step_handler(sent_message, self.category_handler)
+			sent_message = self.bot.send_message(
+				self.chat_id, CATEGORY_TEXT, reply_markup=keyboard)
+			self.bot.register_next_step_handler(sent_message, self.category_handler)
+		except Exception as e:
+			logging.error('In recommend method ' + e)
 	
 
 	def category_handler(self, message: Message):
-		self.category = message.text
-		sent_message = self.bot.send_message(
-			self.chat_id, LOCATION_TEXT, reply_markup=ReplyKeyboardRemove())
-		self.bot.register_next_step_handler(sent_message, self.location_handler)
-		logging.info(f'End of category handler. Cat: {self.category}')
+		try:
+			self.category = message.text
+			sent_message = self.bot.send_message(
+				self.chat_id, LOCATION_TEXT, reply_markup=ReplyKeyboardRemove())
+			self.bot.register_next_step_handler(sent_message, self.location_handler)
+			logging.info(f'End of category handler. Cat: {self.category}')
+		except Exception as e:
+			logging.error('In category handler method ' + e)
 	
 
 	def location_handler(self, message: Message):
-		if not message.location:
-			error_message = self.bot.reply_to(message, INVALID_LOCATION_MESSAGE)
-			self.bot.register_next_step_handler(error_message, self.location_handler)
-			return
-		location = message.location
-		self.latitude = location.latitude
-		self.longitude = location.longitude
-		keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-		buttons = [KeyboardButton(str(i) + KM) for i in range(1, 6)]
-		keyboard.add(*buttons)
-		sent_message = self.bot.send_message(
-			self.chat_id, RADIUS_TEXT, reply_markup=keyboard)
-		self.bot.register_next_step_handler(sent_message, self.radius_handler)
-		logging.info(f'End of location handler. Lat: {self.latitude}, lng: {self.longitude}')
+		try:
+			if not message.location:
+				error_message = self.bot.reply_to(message, INVALID_LOCATION_MESSAGE)
+				self.bot.register_next_step_handler(error_message, self.location_handler)
+				return
+			location = message.location
+			self.latitude = location.latitude
+			self.longitude = location.longitude
+			keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+			buttons = [KeyboardButton(str(i) + KM) for i in range(1, 6)]
+			keyboard.add(*buttons)
+			sent_message = self.bot.send_message(
+				self.chat_id, RADIUS_TEXT, reply_markup=keyboard)
+			self.bot.register_next_step_handler(sent_message, self.radius_handler)
+			logging.info(f'End of location handler. Lat: {self.latitude}, lng: {self.longitude}')
+		except Exception as e:
+			logging.error('In location_handler ' + e)
 	
 
 	def radius_handler(self, message: Message):
-		accepted_values = set(str(i) + KM for i in range(1, 6))
-		if message.text not in accepted_values:
-			error_message = self.bot.reply_to(message, INVALID_RADIUS_MESSAGE)
-			self.bot.register_next_step_handler(error_message, self.radius_handler)
-			return
-		self.radius = int(message.text[0]) * 1000
-		sent_message = self.bot.send_message(self.chat_id, NUM_REC_MESSAGE, reply_markup=ReplyKeyboardRemove())
-		self.bot.register_next_step_handler(sent_message, self.num_recommendations_handler)
-		logging.info(f'End of radius handler. Radius: {self.radius}')
+		try:
+			accepted_values = set(str(i) + KM for i in range(1, 6))
+			if message.text not in accepted_values:
+				error_message = self.bot.reply_to(message, INVALID_RADIUS_MESSAGE)
+				self.bot.register_next_step_handler(error_message, self.radius_handler)
+				return
+			self.radius = int(message.text[0]) * 1000
+			sent_message = self.bot.send_message(self.chat_id, NUM_REC_MESSAGE, reply_markup=ReplyKeyboardRemove())
+			self.bot.register_next_step_handler(sent_message, self.num_recommendations_handler)
+			logging.info(f'End of radius handler. Radius: {self.radius}')
+		except Exception as e:
+			logging.error('In recommend method ' + e)
 		
 
 	def num_recommendations_handler(self, message: Message):
@@ -83,53 +95,58 @@ class Recommender:
 				self.chat_id, ONLY_OPEN_TEXT, reply_markup=keyboard)
 			self.bot.register_next_step_handler(sent_message, self.only_open_handler)
 			logging.info(f'End of num rec handler. Num recs: {self.num_rec}')
-		except ValueError:
+		except Exception as e:
 			error_message = self.bot.reply_to(message, INVALID_INT_MESSAGE)
 			self.bot.register_next_step_handler(error_message, self.num_recommendations_handler)
-			logging.info(f'Invalid integer entered for num recs.')
+			logging.error('In num_reco handler ' + e)
 
 
 	def only_open_handler(self, message: Message):
-		accepted_values = set([YES_TEXT, NO_TEXT])
-		if message.text not in accepted_values:
-			error_message = self.bot.reply_to(message, INVALID_ONLY_OPEN_MESSAGE)
-			self.bot.register_next_step_handler(error_message, self.only_open_handler)
-			return
-		self.only_open = True if message.text == YES_TEXT else False
-		self.recommendation_handler()
-		logging.info(f'End of only open handler. Only open: {self.only_open}')
+		try:
+			accepted_values = set([YES_TEXT, NO_TEXT])
+			if message.text not in accepted_values:
+				error_message = self.bot.reply_to(message, INVALID_ONLY_OPEN_MESSAGE)
+				self.bot.register_next_step_handler(error_message, self.only_open_handler)
+				return
+			self.only_open = True if message.text == YES_TEXT else False
+			self.recommendation_handler()
+			logging.info(f'End of only open handler. Only open: {self.only_open}')
+		except Exception as e:
+			logging.error('In only open handler ' + e)
 
 
 	def recommendation_handler(self):
-		params = {
-			KEY: os.getenv(API_KEY),
-			KEYWORD: self.category,
-			LOCATION: f'{self.latitude},{self.longitude}',
-			RADIUS: self.radius,
-			OPEN_NOW: self.only_open
-		}
-		response = requests.request(GET_REQUEST, os.getenv(NEARBY_PLACES_URL), params=params)
-		results = response.json().get(RESULTS_KEY)
-		results = filter(lambda x: x.get(BUSINESS_STATUS_KEY) == OPERATIONAL, results)
-		results = sorted(results, key=lambda result: result.get(RATING_KEY), reverse=True)
-		if not results:
-			self.bot.send_message(self.chat_id, ZERO_RECOMMENDATIONS_MESSAGE)
-			return
-		self.bot.send_message(self.chat_id, 
-			RECOMMENDATIONS_MESSAGE.format(
-				num_rec=min(self.num_rec, len(results)),
-				category=self.category.lower()),
-			reply_markup=ReplyKeyboardRemove())
-		for i, result in enumerate(results[:self.num_rec]):
-			self.send_recommendation(i, result)
-		keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-		yes_option = KeyboardButton(PICK_FOR_ME_TEXT)
-		no_option = KeyboardButton(PICK_MYSELF_TEXT)
-		keyboard.add(yes_option, no_option)
-		sent_mesasge = self.bot.send_message(
-			self.chat_id, PICK_RANDOM_RECOMMENDATIONS_MESSAGE, reply_markup=keyboard)
-		self.bot.register_next_step_handler(sent_mesasge, self.decision_handler, results[:self.num_rec])
-			
+		try:
+			params = {
+				KEY: os.getenv(API_KEY),
+				KEYWORD: self.category,
+				LOCATION: f'{self.latitude},{self.longitude}',
+				RADIUS: self.radius,
+				OPEN_NOW: self.only_open
+			}
+			response = requests.request(GET_REQUEST, os.getenv(NEARBY_PLACES_URL), params=params)
+			results = response.json().get(RESULTS_KEY)
+			results = filter(lambda x: x.get(BUSINESS_STATUS_KEY) == OPERATIONAL, results)
+			results = sorted(results, key=lambda result: result.get(RATING_KEY), reverse=True)
+			if not results:
+				self.bot.send_message(self.chat_id, ZERO_RECOMMENDATIONS_MESSAGE)
+				return
+			self.bot.send_message(self.chat_id, 
+				RECOMMENDATIONS_MESSAGE.format(
+					num_rec=min(self.num_rec, len(results)),
+					category=self.category.lower()),
+				reply_markup=ReplyKeyboardRemove())
+			for i, result in enumerate(results[:self.num_rec]):
+				self.send_recommendation(i, result)
+			keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+			yes_option = KeyboardButton(PICK_FOR_ME_TEXT)
+			no_option = KeyboardButton(PICK_MYSELF_TEXT)
+			keyboard.add(yes_option, no_option)
+			sent_mesasge = self.bot.send_message(
+				self.chat_id, PICK_RANDOM_RECOMMENDATIONS_MESSAGE, reply_markup=keyboard)
+			self.bot.register_next_step_handler(sent_mesasge, self.decision_handler, results[:self.num_rec])
+		except Exception as e:
+			logging.error('In recommendation handler ' + e)			
 
 	def send_recommendation(self, index: int, result: dict):
 		price_level = result.get(PRICE_LEVEL_KEY)
@@ -174,22 +191,25 @@ class Recommender:
 	
 
 	def decision_handler(self, message: Message, results: list):
-		accepted_values = set([PICK_FOR_ME_TEXT, PICK_MYSELF_TEXT])
-		if message.text not in accepted_values:
-			error_message = self.bot.reply_to(message, INVALID_ONLY_OPEN_MESSAGE)
-			self.bot.register_next_step_handler(error_message, self.decision_handler, results)
-			logging.info(f'Invalid decision.')
-			return
-		if message.text == PICK_MYSELF_TEXT:
+		try:
+			accepted_values = set([PICK_FOR_ME_TEXT, PICK_MYSELF_TEXT])
+			if message.text not in accepted_values:
+				error_message = self.bot.reply_to(message, INVALID_ONLY_OPEN_MESSAGE)
+				self.bot.register_next_step_handler(error_message, self.decision_handler, results)
+				logging.info(f'Invalid decision.')
+				return
+			if message.text == PICK_MYSELF_TEXT:
+				self.bot.send_message(self.chat_id,
+					SIGN_OFF_TEXT, reply_markup=ReplyKeyboardRemove())
+				logging.info(f'End of decision handler, user picked choose myself')
+				return
+			rand_index = randint(0, len(results) - 1)
 			self.bot.send_message(self.chat_id,
-				SIGN_OFF_TEXT, reply_markup=ReplyKeyboardRemove())
-			logging.info(f'End of decision handler, user picked choose myself')
-			return
-		rand_index = randint(0, len(results) - 1)
-		self.bot.send_message(self.chat_id,
-			BOT_RECOMMENDATION_MESSAGE, reply_markup=ReplyKeyboardRemove())
-		self.send_recommendation(rand_index, results[rand_index])
-		logging.info(f'End of decision handler, bot recommendation')
+				BOT_RECOMMENDATION_MESSAGE, reply_markup=ReplyKeyboardRemove())
+			self.send_recommendation(rand_index, results[rand_index])
+			logging.info(f'End of decision handler, bot recommendation')
+		except Exception as e:
+			logging.error('In decisoon_handler ' + e)
 
 
 
