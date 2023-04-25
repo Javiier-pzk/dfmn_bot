@@ -63,6 +63,7 @@ def suggest(message):
 def receive_updates():
     update = telebot.types.Update.de_json(request.stream.read().decode())
     update_queue.put(update)
+    logging.info(UPDATE_RECEIVED_LOG)
     return STATUS_OK
 
 
@@ -71,6 +72,7 @@ def handle_updates(update_queue: Queue):
 		try:
 			update = update_queue.get()
 			dfmn_bot.process_new_updates([update])
+			logging.info(UPDATE_PROCESSED_LOG)
 			update_queue.task_done()
 		except Exception as e:
 			logging.error(e)
