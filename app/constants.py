@@ -1,4 +1,3 @@
-MAIN_PROGRAM = '__main__'
 STATUS_OK = '200 OK'
 START_COMMAND = 'start'
 RNG_COMMAND = 'rng'

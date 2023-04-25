@@ -1,6 +1,6 @@
 from telebot import TeleBot
 from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove, InputMediaPhoto
-from constants import *
+from app.constants import *
 import os
 import requests
 from PIL import Image
@@ -153,7 +153,7 @@ class Recommender:
 				return media_photos
 			for photo in photos:
 				params = {
-					KEY: self.api_key,
+					KEY: os.getenv(API_KEY),
 					PHOTO_REF: photo.get(PHOTO_REF),
 					MAX_HEIGHT: photo.get(HEIGHT),
 					MAX_WIDTH: photo.get(WIDTH)

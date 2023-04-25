@@ -1,9 +1,9 @@
 import os
 import telebot
 from dotenv import load_dotenv
-from constants import *
-from suggester import Recommender
-from random_utils import *
+from app.constants import *
+from app.suggester import Recommender
+from app.random_utils import *
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -61,7 +61,3 @@ def send_dice(message):
 def suggest(message):
 	Recommender(dfmn_bot, message.chat.id).recommend()
 
-
-if __name__ == MAIN_PROGRAM:
-	dfmn_bot.set_webhook(url=WEBHOOK_URL)
-	app.run()
