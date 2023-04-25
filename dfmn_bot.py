@@ -1,9 +1,9 @@
 import os
 import telebot
 from dotenv import load_dotenv
-from app.constants import *
-from app.suggester import Recommender
-from app.random_utils import *
+from constants import *
+from suggester import Recommender
+from random_utils import *
 from flask import Flask, request
 
 app = Flask(__name__)
