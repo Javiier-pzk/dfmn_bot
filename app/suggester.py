@@ -123,6 +123,7 @@ class Recommender:
 
 
     def send_recommendation(self, index: int, place_id: str):
+        self.bot.send_chat_action(self.chat_id, FIND_LOCATION)
         params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULT_KEY)
@@ -151,7 +152,6 @@ class Recommender:
         result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
         place_address = result.get(FORMATTED_ADDRESS_KEY)
         place_id = result.get(PLACE_ID_KEY)
-        self.bot.send_chat_action(self.chat_id, FIND_LOCATION)
         self.bot.send_venue(self.chat_id, result_lat, result_lng,
                             place_name, place_address, google_place_id=place_id)
         if media_photos:
