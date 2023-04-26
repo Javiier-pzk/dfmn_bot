@@ -110,7 +110,7 @@ class Recommender:
                 num_rec=min(self.num_rec, len(results)),category=self.category.lower()),
             reply_markup=ReplyKeyboardRemove())
         for i, result in enumerate(results[:self.num_rec]):
-            self.send_recommendation(i, result)
+            self.send_recommendation(i, result.get(PLACE_ID_KEY))
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
         yes_option = KeyboardButton(PICK_FOR_ME_TEXT)
         no_option = KeyboardButton(PICK_MYSELF_TEXT)
@@ -121,22 +121,33 @@ class Recommender:
             sent_mesasge, self.decision_handler, results[:self.num_rec])
 
 
-    def send_recommendation(self, index: int, result: dict):
+    def send_recommendation(self, index: int, place_id: str):
+        response = requests.request(
+            GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params={PLACE_ID_KEY: place_id})
+        result = response.json().get(RESULTS_KEY)
         price_level = result.get(PRICE_LEVEL_KEY)
         price_level_str = DOLLAR_SIGN * price_level if price_level else None
         rating = result.get(RATING_KEY)
         user_ratings_total = result.get(USER_RATINGS_TOTAL_KEY)
         is_open = result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)
+        opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
+        contact_info = result.get(FORMATTED_PHONE_NUMBER_KEY)
+        webite = result.get(WEBSITE_KEY)
+        place_overview = result.get(EDITORIAL_SUMMARY_KEY).get(OVERVIEW_KEY)
+        options = self.get_place_options(result)
+        serves = self.get_place_serves(result)
         text = RECOMMENDATIONS_TEXT.format(
-            rating=rating, user_ratings_total=user_ratings_total,
-            price_level=price_level_str, open_now=is_open)
+            overview=place_overview, rating=rating, 
+            user_ratings_total=user_ratings_total, price_level=price_level_str,
+            contact_info=contact_info ,webite=webite, options=options, serves=serves,
+            open_now=is_open, opening_hours=opening_hours)
         photos = result.get(PHOTOS_KEY)
         media_photos = self.get_place_photos(photos, text)
         place_name = PLACE_NAME.format(
             index=index + 1, name=result.get(NAME_KEY))
         result_lat = result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY)
         result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
-        place_address = result.get(VICINITY_KEY)
+        place_address = result.get(FORMATTED_ADDRESS_KEY)
         place_id = result.get(PLACE_ID_KEY)
         self.bot.send_venue(self.chat_id, result_lat, result_lng,
                             place_name, place_address, google_place_id=place_id)
@@ -164,6 +175,37 @@ class Recommender:
             media_photos.append(media_photo)
         return media_photos
 
+
+    def get_place_options(self, result: dict) -> str:
+        options = []
+        if result.get(DINE_IN_KEY):
+            options.append(DINE_IN)
+        if result.get(TAKE_OUT_KEY):
+            options.append(TAKE_OUT)
+        if result.get(DELIVERY_KEY):
+            options.append(DELIVERY)
+        if result.get(RESERVABLE_KEY):
+            options.append(RESERVABLE_KEY.capitalize())
+        return f'{COMMA} '.join(options)
+
+     
+    def get_place_serves(self, result: dict) -> str:
+        serves = []
+        if result.get(SERVES_BREAKFAST_KEY):
+            serves.append(BREAKFAST)
+        if result.get(SERVES_BRUNCH_KEY):
+            serves.append(BRUNCH)
+        if result.get(SERVES_LUNCH_KEY):
+            serves.append(LUNCH)
+        if result.get(SERVES_DINNER_KEY):
+            serves.append(DINNER)
+        if result.get(SERVES_VEG_FOOD_KEY):
+            serves.append(VEG_FOOD)
+        if result.get(SERVES_BEER_KEY):
+            serves.append(BEER)
+        if result.get(SERVES_WINE_KEY):
+            serves.append(WINE)
+        return f'{COMMA} '.join(serves)
 
     def decision_handler(self, message: Message, results: list):
         accepted_values = set([PICK_FOR_ME_TEXT, PICK_MYSELF_TEXT])

@@ -37,6 +37,7 @@ NO_TEXT = 'No'
 API_KEY = 'API_KEY'
 NEARBY_PLACES_URL = 'NEARBY_PLACES_URL'
 PLACE_PHOTO_URL = 'PLACE_PHOTO_URL'
+PLACE_DETAILS_URL = 'PLACE_DETAILS_URL'
 WEBHOOK_DOMAIN = 'WEBHOOK_DOMAIN'
 GET_REQUEST = 'GET'
 POST_REQUEST = 'POST'
@@ -69,9 +70,35 @@ NUM_REC_MESSAGE = 'How many recommendations do you want to see?'
 ZERO_RECOMMENDATIONS_MESSAGE = 'Sorry, I am unable to find any recommendations that fit your criteria 😕'
 RECOMMENDATIONS_MESSAGE = "Here are the top {num_rec} {category} recommendations near you:"
 PLACE_ID_KEY = 'place_id'
-VICINITY_KEY = 'vicinity'
+FORMATTED_ADDRESS_KEY = 'formatted_address'
+FORMATTED_PHONE_NUMBER_KEY = 'formatted_phone_number'
+WEEKDAY_TEXT_KEY = 'weekday_text'
 BUSINESS_STATUS_KEY = 'business_status'
 OPERATIONAL = 'OPERATIONAL'
+WEBSITE_KEY = 'WEBSITE'
+EDITORIAL_SUMMARY_KEY = 'editorial_summary'
+OVERVIEW_KEY = 'overview'
+SERVES_BEER_KEY = 'serves_beer'
+SERVES_BREAKFAST_KEY = 'serves_brealfast'
+SERVES_BRUNCH_KEY = 'serves_brunch'
+SERVES_LUNCH_KEY = 'serves_lunch'
+SERVES_DINNER_KEY = 'serves_dinner'
+SERVES_VEG_FOOD_KEY = 'serves_vegetarian_food'
+SERVES_WINE_KEY = 'serves_wine'
+TAKE_OUT_KEY = 'take_out'
+DINE_IN_KEY = 'dine_in'
+DELIVERY_KEY = 'delivery'
+RESERVABLE_KEY = 'reservable'
+DINE_IN = 'Dine in'
+TAKE_OUT = 'Take out'
+DELIVERY = 'Delivery'
+BREAKFAST = 'Breakfast'
+BRUNCH = 'Brunch'
+LUNCH = 'Lunch'
+DINNER = 'Dinner'
+VEG_FOOD = 'Vegetarian food'
+BEER = 'Beer'
+WINE = 'Wine'
 INVALID_CATEGORY_MESSAGE = 'Invalid category. Please try again.'
 INVALID_LOCATION_MESSAGE = 'Invalid location. Please try again.'
 INVALID_RADIUS_MESSAGE = 'Invalid search radius. Please try again.'
@@ -90,10 +117,17 @@ COMMANDS = f"""
 ➡️ /{DICE_COMMAND} -> {DICE_COMMAND_DESC}
 """
 RECOMMENDATIONS_TEXT = """
+Overview: {overview}
 Rating: {rating}
 Total user ratings: {user_ratings_total}
 Price level: {price_level}
+Contact info: {contact_info}
+Website: {website}
+Options: {options}
+Serves: {serves}
 Open now: {open_now}
+Opening hours: 
+{weekday_text}
 """
 PLACE_NAME = '{index}. {name}'
 START_MESSAGE = f"""
@@ -109,3 +143,4 @@ BOT_DESC = """
 Hello 👋, I am tootiebot 🤖! 
 Press the start button to see what I can do!
 """
+NEW_LINE = '\n'
