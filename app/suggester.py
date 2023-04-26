@@ -140,8 +140,8 @@ class Recommender:
             print('opening_hours', opening_hours)
             contact_info = result.get(PHONE_NUMBER_KEY)
             print('contact_info', contact_info)
-            webite = result.get(WEBSITE_KEY)
-            print('webite', webite)
+            website = result.get(WEBSITE_KEY)
+            print('website', website)
             place_editorial_summary = result.get(EDITORIAL_SUMMARY_KEY)
             print('place_editorial_summary', place_editorial_summary)
             place_overview = place_editorial_summary.get(OVERVIEW_KEY) if place_editorial_summary else None
@@ -153,7 +153,7 @@ class Recommender:
             text = RECOMMENDATIONS_TEXT.format(
                 overview=place_overview, rating=rating, 
                 user_ratings_total=user_ratings_total, price_level=price_level_str,
-                contact_info=contact_info ,webite=webite, options=options, serves=serves,
+                contact_info=contact_info ,website=website, options=options, serves=serves,
                 open_now=is_open, opening_hours=opening_hours)
             print('text:', text)
             photos = result.get(PHOTOS_KEY)
