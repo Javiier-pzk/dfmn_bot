@@ -110,6 +110,7 @@ PICK_FOR_ME_TEXT = "Yes, pick for me!"
 PICK_MYSELF_TEXT = "No, I'll pick myself!"
 BOT_RECOMMENDATION_MESSAGE = 'My recommendation is:'
 SIGN_OFF_TEXT = 'Alright! Have a nice day 👋'
+TYPING = 'typing'
 COMMANDS = f"""
 ➡️ /{SUGGEST_COMMAND} -> {SUGGEST_COMMAND_DESC}
 ➡️ /{DECIDE_COMMAND} -> {DECIDE_COMMAND_DESC}

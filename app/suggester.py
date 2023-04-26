@@ -92,6 +92,7 @@ class Recommender:
 
 
     def recommendation_handler(self):
+        self.bot.send_chat_action(self.chat_id, TYPING)
         params = {
             KEY: os.getenv(API_KEY),
             KEYWORD: self.category,
@@ -150,11 +151,14 @@ class Recommender:
         result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
         place_address = result.get(FORMATTED_ADDRESS_KEY)
         place_id = result.get(PLACE_ID_KEY)
+        self.bot.send_chat_action(self.chat_id, FIND_LOCATION)
         self.bot.send_venue(self.chat_id, result_lat, result_lng,
                             place_name, place_address, google_place_id=place_id)
         if media_photos:
+            self.bot.send_chat_action(self.chat_id, UPLOAD_PHOTO)
             self.bot.send_media_group(self.chat_id, media_photos)
         if not media_photos or len(media_photos) > 1:
+            self.bot.send_chat_action(self.chat_id, TYPING)
             self.bot.send_message(self.chat_id, text)
 
 
