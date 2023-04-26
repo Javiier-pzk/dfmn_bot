@@ -1,6 +1,5 @@
 import os
 import telebot
-import logging
 from threading import Thread
 from dotenv import load_dotenv
 from app.constants import *
@@ -16,7 +15,6 @@ BOT_TOKEN = os.getenv(BOT_TOKEN)
 WEBHOOK_DOMAIN = os.getenv(WEBHOOK_DOMAIN)
 WEBHOOK_URL = WEBHOOK_DOMAIN + BOT_TOKEN
 update_queue = Queue()
-logging.basicConfig(level=logging.INFO)
 
 commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
 			telebot.types.BotCommand(DECIDE_COMMAND, DECIDE_COMMAND_DESC),
@@ -65,19 +63,14 @@ def suggest(message):
 def receive_updates():
     update = telebot.types.Update.de_json(request.stream.read().decode())
     update_queue.put(update)
-    logging.info(UPDATE_RECEIVED_LOG)
     return STATUS_OK
 
 
 def handle_updates(update_queue: Queue):
 	while True:
-		try:
-			update = update_queue.get()
-			dfmn_bot.process_new_updates([update])
-			logging.info(UPDATE_PROCESSED_LOG)
-			update_queue.task_done()
-		except Exception as e:
-			logging.error(e)
+		update = update_queue.get()
+		dfmn_bot.process_new_updates([update])
+		update_queue.task_done()
 
 
 update_thread = Thread(target=handle_updates, args=(update_queue,))

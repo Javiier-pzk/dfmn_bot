@@ -3,7 +3,6 @@ from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKey
 from app.constants import *
 import os
 import requests
-import logging
 from PIL import Image
 from io import BytesIO
 from random import randint
@@ -20,7 +19,7 @@ class Recommender:
         self.radius = None
         self.only_open = False
         self.num_rec = None
-        logging.basicConfig(level=logging.DEBUG)
+
 
     def recommend(self):
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -32,14 +31,13 @@ class Recommender:
         keyboard.add(*buttons)
         sent_message = self.bot.send_message(self.chat_id, CATEGORY_TEXT, reply_markup=keyboard)
         self.bot.register_next_step_handler(sent_message, self.category_handler)
-        logging.info('recommend method completed')
+
 
     def category_handler(self, message: Message):
         self.category = message.text
         sent_message = self.bot.send_message(
             self.chat_id, LOCATION_TEXT, reply_markup=ReplyKeyboardRemove())
         self.bot.register_next_step_handler(sent_message, self.location_handler)
-        logging.info(f'End of category handler. Cat: {self.category}')
 
 
     def location_handler(self, message: Message):
@@ -55,7 +53,6 @@ class Recommender:
         keyboard.add(*buttons)
         sent_message = self.bot.send_message(self.chat_id, RADIUS_TEXT, reply_markup=keyboard)
         self.bot.register_next_step_handler(sent_message, self.radius_handler)
-        logging.info(f'End of location handler. Lat: {self.latitude}, lng: {self.longitude}')
 
 
     def radius_handler(self, message: Message):
@@ -68,7 +65,6 @@ class Recommender:
         sent_message = self.bot.send_message(
             self.chat_id, NUM_REC_MESSAGE, reply_markup=ReplyKeyboardRemove())
         self.bot.register_next_step_handler(sent_message, self.num_recommendations_handler)
-        logging.info(f'End of radius handler. Radius: {self.radius}')
 
 
     def num_recommendations_handler(self, message: Message):
@@ -80,7 +76,6 @@ class Recommender:
             keyboard.add(yes_option, no_option)
             sent_message = self.bot.send_message(self.chat_id, ONLY_OPEN_TEXT, reply_markup=keyboard)
             self.bot.register_next_step_handler(sent_message, self.only_open_handler)
-            logging.info(f'End of num rec handler. Num recs: {self.num_rec}')
         except ValueError:
             error_message = self.bot.reply_to(message, INVALID_INT_MESSAGE)
             self.bot.register_next_step_handler(error_message, self.num_recommendations_handler)
@@ -94,7 +89,6 @@ class Recommender:
             return
         self.only_open = True if message.text == YES_TEXT else False
         self.recommendation_handler()
-        logging.info(f'End of only open handler. Only open: {self.only_open}')
 
 
     def recommendation_handler(self):
@@ -176,14 +170,11 @@ class Recommender:
         if message.text not in accepted_values:
             error_message = self.bot.reply_to(message, INVALID_ONLY_OPEN_MESSAGE)
             self.bot.register_next_step_handler(error_message, self.decision_handler, results)
-            logging.info(f'Invalid decision.')
             return
         if message.text == PICK_MYSELF_TEXT:
             self.bot.send_message(self.chat_id,SIGN_OFF_TEXT, reply_markup=ReplyKeyboardRemove())
-            logging.info(f'End of decision handler, user picked choose myself')
             return
         rand_index = randint(0, len(results) - 1)
         self.bot.send_message(
             self.chat_id, BOT_RECOMMENDATION_MESSAGE, reply_markup=ReplyKeyboardRemove())
         self.send_recommendation(rand_index, results[rand_index])
-        logging.info(f'End of decision handler, bot recommendation')
