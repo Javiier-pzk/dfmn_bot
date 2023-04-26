@@ -122,56 +122,40 @@ class Recommender:
 
 
     def send_recommendation(self, index: int, place_id: str):
-        try:
-            params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
-            response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
-            result = response.json().get(RESULT_KEY)
-            print('result', result)
-            price_level = result.get(PRICE_LEVEL_KEY)
-            price_level_str = DOLLAR_SIGN * price_level if price_level else None
-            print('price_level_str', price_level_str)
-            rating = result.get(RATING_KEY)
-            print('rating', rating)
-            user_ratings_total = result.get(USER_RATINGS_TOTAL_KEY)
-            print('user_ratings_total', user_ratings_total)
-            is_open = result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)
-            print('is_open', is_open)
-            opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
-            print('opening_hours', opening_hours)
-            contact_info = result.get(PHONE_NUMBER_KEY)
-            print('contact_info', contact_info)
-            website = result.get(WEBSITE_KEY)
-            print('website', website)
-            place_editorial_summary = result.get(EDITORIAL_SUMMARY_KEY)
-            print('place_editorial_summary', place_editorial_summary)
-            place_overview = place_editorial_summary.get(OVERVIEW_KEY) if place_editorial_summary else None
-            print('place_overview', place_overview)
-            options = self.get_place_options(result)
-            print('options', options)
-            serves = self.get_place_serves(result)
-            print('serves', serves)
-            text = RECOMMENDATIONS_TEXT.format(
+        params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
+        response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
+        result = response.json().get(RESULT_KEY)
+        price_level = result.get(PRICE_LEVEL_KEY)
+        price_level_str = DOLLAR_SIGN * price_level if price_level else None
+        rating = result.get(RATING_KEY)
+        user_ratings_total = result.get(USER_RATINGS_TOTAL_KEY)
+        is_open = result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)
+        opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
+        contact_info = result.get(PHONE_NUMBER_KEY)
+        website = result.get(WEBSITE_KEY)
+        place_editorial_summary = result.get(EDITORIAL_SUMMARY_KEY)
+        place_overview = place_editorial_summary.get(OVERVIEW_KEY) if place_editorial_summary else None
+        options = self.get_place_options(result)
+        serves = self.get_place_serves(result)
+        text = RECOMMENDATIONS_TEXT.format(
                 overview=place_overview, rating=rating, 
                 user_ratings_total=user_ratings_total, price_level=price_level_str,
                 contact_info=contact_info ,website=website, options=options, serves=serves,
                 open_now=is_open, opening_hours=opening_hours)
-            print('text:', text)
-            photos = result.get(PHOTOS_KEY)
-            media_photos = self.get_place_photos(photos, text)
-            place_name = PLACE_NAME.format(
+        photos = result.get(PHOTOS_KEY)
+        media_photos = self.get_place_photos(photos, text)
+        place_name = PLACE_NAME.format(
                 index=index + 1, name=result.get(NAME_KEY))
-            result_lat = result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY)
-            result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
-            place_address = result.get(FORMATTED_ADDRESS_KEY)
-            place_id = result.get(PLACE_ID_KEY)
-            self.bot.send_venue(self.chat_id, result_lat, result_lng,
-                                place_name, place_address, google_place_id=place_id)
-            if media_photos:
-                self.bot.send_media_group(self.chat_id, media_photos)
-            if not media_photos or len(media_photos) > 1:
-                self.bot.send_message(self.chat_id, text)
-        except Exception as e:
-            print(e)
+        result_lat = result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY)
+        result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
+        place_address = result.get(FORMATTED_ADDRESS_KEY)
+        place_id = result.get(PLACE_ID_KEY)
+        self.bot.send_venue(self.chat_id, result_lat, result_lng,
+                            place_name, place_address, google_place_id=place_id)
+        if media_photos:
+            self.bot.send_media_group(self.chat_id, media_photos)
+        if not media_photos or len(media_photos) > 1:
+            self.bot.send_message(self.chat_id, text)
 
 
     def get_place_photos(self, photos: list | None, text: str):
@@ -224,6 +208,7 @@ class Recommender:
             serves.append(WINE)
         return f'{COMMA} '.join(serves)
 
+
     def decision_handler(self, message: Message, results: list):
         accepted_values = set([PICK_FOR_ME_TEXT, PICK_MYSELF_TEXT])
         if message.text not in accepted_values:
@@ -236,4 +221,4 @@ class Recommender:
         rand_index = randint(0, len(results) - 1)
         self.bot.send_message(
             self.chat_id, BOT_RECOMMENDATION_MESSAGE, reply_markup=ReplyKeyboardRemove())
-        self.send_recommendation(rand_index, results[rand_index])
+        self.send_recommendation(rand_index, results[rand_index].get(PLACE_ID_KEY))
