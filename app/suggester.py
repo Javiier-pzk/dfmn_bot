@@ -123,7 +123,7 @@ class Recommender:
 
 
     def send_recommendation(self, index: int, place_id: str):
-        self.bot.send_chat_action(self.chat_id, FIND_LOCATION)
+        self.bot.send_chat_action(self.chat_id, TYPING)
         params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULT_KEY)
