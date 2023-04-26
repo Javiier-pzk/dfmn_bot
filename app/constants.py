@@ -128,7 +128,7 @@ Options: {options}
 Serves: {serves}
 Open now: {open_now}
 Opening hours: 
-{weekday_text}
+{opening_hours}
 """
 PLACE_NAME = '{index}. {name}'
 START_MESSAGE = f"""
