@@ -59,6 +59,11 @@ def suggest(message):
 	Recommender(dfmn_bot, message.chat.id).recommend()
 
 
+@dfmn_bot.message_handler(func=lambda m :True)
+def unknown_message_handler(message):
+	dfmn_bot.reply_to(message, UNKNOWN_COMMAND_MESSAGE)
+
+
 @app.route('/' + BOT_TOKEN, methods=[POST_REQUEST])
 def receive_updates():
     update = telebot.types.Update.de_json(request.stream.read().decode())
