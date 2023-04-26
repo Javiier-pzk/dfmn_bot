@@ -125,6 +125,7 @@ class Recommender:
         params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULTS_KEY)
+        print('result', result)
         price_level = result.get(PRICE_LEVEL_KEY)
         price_level_str = DOLLAR_SIGN * price_level if price_level else None
         rating = result.get(RATING_KEY)
@@ -141,6 +142,7 @@ class Recommender:
             user_ratings_total=user_ratings_total, price_level=price_level_str,
             contact_info=contact_info ,webite=webite, options=options, serves=serves,
             open_now=is_open, opening_hours=opening_hours)
+        print('text:', text)
         photos = result.get(PHOTOS_KEY)
         media_photos = self.get_place_photos(photos, text)
         place_name = PLACE_NAME.format(
