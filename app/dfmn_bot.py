@@ -28,7 +28,8 @@ commands = [telebot.types.BotCommand(SUGGEST_COMMAND, SUGGEST_COMMAND_DESC),
 dfmn_bot = telebot.TeleBot(BOT_TOKEN)
 dfmn_bot.set_my_commands(commands)
 dfmn_bot.set_my_description(BOT_DESC)
-
+dfmn_bot.remove_webhook()
+dfmn_bot.set_webhook(url=WEBHOOK_URL)
 
 @dfmn_bot.message_handler(commands=[START_COMMAND])
 def send_start_message(message):
@@ -36,8 +37,8 @@ def send_start_message(message):
 
 
 @dfmn_bot.message_handler(commands=[DECIDE_COMMAND])
-async def make_decision(message):
-	await Decider(dfmn_bot, message.chat.id).decide()
+def make_decision(message):
+	Decider(dfmn_bot, message.chat.id).decide()
 	
 
 @dfmn_bot.message_handler(commands=[COIN_COMMAND])
@@ -46,8 +47,8 @@ def flip_coin(message):
 	
 
 @dfmn_bot.message_handler(commands=[RNG_COMMAND])
-async def generate_random_number(message):
-	await RandomNumberGenerator(dfmn_bot, message.chat.id).generate()
+def generate_random_number(message):
+	RandomNumberGenerator(dfmn_bot, message.chat.id).generate()
 
 
 @dfmn_bot.message_handler(commands=[DICE_COMMAND])
@@ -56,8 +57,8 @@ def send_dice(message):
 
 
 @dfmn_bot.message_handler(commands=[SUGGEST_COMMAND])
-async def suggest(message):
-	await Recommender(dfmn_bot, message.chat.id).recommend()
+def suggest(message):
+	Recommender(dfmn_bot, message.chat.id).recommend()
 
 
 @app.route('/' + BOT_TOKEN, methods=[POST_REQUEST])

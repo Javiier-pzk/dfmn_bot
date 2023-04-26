@@ -9,9 +9,9 @@ class Decider:
 		self.bot = bot
 		self.chat_id = chat_id
 
-	async def decide(self):
+	def decide(self):
 		sent_message = self.bot.send_message(self.chat_id, OPTIONS_TEXT)
-		await self.bot.register_next_step_handler(sent_message, self.options_handler)
+		self.bot.register_next_step_handler(sent_message, self.options_handler)
 	
 	def options_handler(self, message: Message):
 		options = message.text.split(COMMA)
@@ -33,25 +33,25 @@ class RandomNumberGenerator:
 		self.bot = bot
 		self.chat_id = chat_id
 	
-	async def generate(self) -> str:
+	def generate(self) -> str:
 		sent_message = self.bot.send_message(self.chat_id, LOWER_BOUND_TEXT)
-		await self.bot.register_next_step_handler(sent_message, self.lower_bound_handler)
+		self.bot.register_next_step_handler(sent_message, self.lower_bound_handler)
 
 
-	async def lower_bound_handler(self, message: Message):
+	def lower_bound_handler(self, message: Message):
 		num_str = message.text.strip()
 		try:
 			lower_bound = int(num_str)
 			sent_message = self.bot.send_message(self.chat_id, UPPER_BOUND_TEXT)
-			await self.bot.register_next_step_handler(
+			self.bot.register_next_step_handler(
 				sent_message, self.upper_bound_handler, lower_bound)
 		except ValueError:
 			error_message = self.bot.send_message(self.chat_id, INVALID_INT_MESSAGE)
-			await self.bot.register_next_step_handler(
+			self.bot.register_next_step_handler(
 				error_message, self.lower_bound_handler)
 
 
-	async def upper_bound_handler(self, message: Message, lower_bound: int):
+	def upper_bound_handler(self, message: Message, lower_bound: int):
 		num_str = message.text.strip()
 		try:
 			upper_bound = int(num_str)
@@ -59,5 +59,5 @@ class RandomNumberGenerator:
 			self.bot.send_message(self.chat_id, RAND_INT_STR + str(rand_int))
 		except ValueError:
 			error_message = self.bot.send_message(self.chat_id, INVALID_INT_MESSAGE)
-			await self.bot.register_next_step_handler(
+			self.bot.register_next_step_handler(
 				error_message, self.upper_bound_handler, lower_bound)
