@@ -122,9 +122,11 @@ class Recommender:
 
 
     def send_recommendation(self, index: int, place_id: str):
+        print('place_id', place_id)
         response = requests.request(
             GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params={PLACE_ID_KEY: place_id})
         result = response.json().get(RESULTS_KEY)
+        print('result', result)
         price_level = result.get(PRICE_LEVEL_KEY)
         price_level_str = DOLLAR_SIGN * price_level if price_level else None
         rating = result.get(RATING_KEY)
