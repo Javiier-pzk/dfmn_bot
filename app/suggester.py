@@ -132,9 +132,10 @@ class Recommender:
         user_ratings_total = result.get(USER_RATINGS_TOTAL_KEY)
         is_open = result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)
         opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
-        contact_info = result.get(FORMATTED_PHONE_NUMBER_KEY)
+        contact_info = result.get(PHONE_NUMBER_KEY)
         webite = result.get(WEBSITE_KEY)
-        place_overview = result.get(EDITORIAL_SUMMARY_KEY).get(OVERVIEW_KEY)
+        place_editorial_summary = result.get(EDITORIAL_SUMMARY_KEY)
+        place_overview = place_editorial_summary.get(OVERVIEW_KEY) if place_editorial_summary else None
         options = self.get_place_options(result)
         serves = self.get_place_serves(result)
         text = RECOMMENDATIONS_TEXT.format(
