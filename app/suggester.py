@@ -181,7 +181,7 @@ class Recommender:
         return media_photos
 
 
-    def get_media_photo(photo: dict, text: str | None, media_photos: list):
+    def get_media_photo(self, photo: dict, text: str | None, media_photos: list):
         params = {
             KEY: os.getenv(API_KEY),
             PHOTO_REF: photo.get(PHOTO_REF),
