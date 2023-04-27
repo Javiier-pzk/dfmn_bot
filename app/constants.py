@@ -122,9 +122,6 @@ COMMANDS = f"""
 RECOMMENDATION_TEXT_KEY = 'recommendation_text'
 INDEX_KEY = 'index'
 MEDIA_PHOTOS_KEY = 'media_photos'
-RESULT_LAT_KEY = 'result_lat'
-RESULT_LNG_KEY = 'result_lng'
-PLACE_ADDRESS_KEY = 'place_address'
 VENUE_MESSAGE_KEY = 'venue_message'
 RECOMMENDATIONS_TEXT = """
 Overview: {overview}

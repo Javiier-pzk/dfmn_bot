@@ -158,9 +158,9 @@ class Recommender:
             MEDIA_PHOTOS_KEY: media_photos,
             NAME_KEY: result.get(NAME_KEY),
             PLACE_ID_KEY: place_id,
-            PLACE_ADDRESS_KEY: result.get(FORMATTED_ADDRESS_KEY),
-            RESULT_LAT_KEY: result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY),
-            RESULT_LNG_KEY: result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
+            FORMATTED_ADDRESS_KEY: result.get(FORMATTED_ADDRESS_KEY),
+            LAT_KEY: result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY),
+            LNG_KEY: result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
         }
     
 
@@ -168,9 +168,9 @@ class Recommender:
         place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY) + 1,
                                        name=recommendation.get(NAME_KEY))
         sent_venue = self.bot.send_venue(self.chat_id, 
-            recommendation.get(RESULT_LAT_KEY),
-            recommendation.get(RESULT_LNG_KEY), place_name, 
-            recommendation.get(PLACE_ADDRESS_KEY),
+            recommendation.get(LAT_KEY),
+            recommendation.get(LNG_KEY), place_name, 
+            recommendation.get(FORMATTED_ADDRESS_KEY),
             google_place_id=recommendation.get(PLACE_ID_KEY))
         recommendation[VENUE_MESSAGE_KEY] = sent_venue
         media_photos = recommendation.get(MEDIA_PHOTOS_KEY)
