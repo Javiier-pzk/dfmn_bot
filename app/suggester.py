@@ -3,7 +3,8 @@ from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKey
 from app.constants import *
 import os
 import requests
-from threading import Thread, get_ident
+from threading import Thread
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from PIL import Image
 from io import BytesIO
 from random import randint
@@ -112,12 +113,17 @@ class Recommender:
                 num_rec=min(self.num_rec, len(results)),category=self.category.lower()),
             reply_markup=ReplyKeyboardRemove())
         
-        recommendations = []
-        for i, result in enumerate(results[:self.num_rec]):
-            recommendation_details = self.get_recommendation_details(i, result.get(PLACE_ID_KEY))
-            self.send_recommendation(recommendation_details)
-            recommendations.append(recommendation_details)
-
+        recommendations = []        
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            futures = [
+                executor.submit(self.get_recommendation_details, i, result.get(PLACE_ID_KEY))
+                    for i, result in enumerate(results[:self.num_rec])
+                ]
+            for future in as_completed(futures):
+                recommendation_details = future.result()
+                recommendations.append(recommendation_details)
+                
+        self.send_recommendations(recommendations)
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
         yes_option = KeyboardButton(PICK_FOR_ME_TEXT)
         no_option = KeyboardButton(PICK_MYSELF_TEXT)
@@ -164,46 +170,42 @@ class Recommender:
         }
     
 
-    def send_recommendation(self, recommendation: dict):
-        place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY) + 1,
-                                       name=recommendation.get(NAME_KEY))
-        sent_venue = self.bot.send_venue(self.chat_id, 
-            recommendation.get(LAT_KEY),
-            recommendation.get(LNG_KEY), place_name, 
-            recommendation.get(FORMATTED_ADDRESS_KEY),
-            google_place_id=recommendation.get(PLACE_ID_KEY))
-        recommendation[VENUE_MESSAGE_KEY] = sent_venue
-        media_photos = recommendation.get(MEDIA_PHOTOS_KEY)
-        if media_photos:
-            self.bot.send_chat_action(self.chat_id, UPLOAD_PHOTO)
-            self.bot.send_media_group(self.chat_id, media_photos)
-        if not media_photos or len(media_photos) > 1:
-            self.bot.send_chat_action(self.chat_id, TYPING)
-            self.bot.send_message(self.chat_id, recommendation.get(RECOMMENDATION_TEXT_KEY))
+    def send_recommendations(self, recommendations: list):
+        for recommendation in recommendations:
+            place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY) + 1,
+                                        name=recommendation.get(NAME_KEY))
+            sent_venue = self.bot.send_venue(self.chat_id, 
+                recommendation.get(LAT_KEY),
+                recommendation.get(LNG_KEY), place_name, 
+                recommendation.get(FORMATTED_ADDRESS_KEY),
+                google_place_id=recommendation.get(PLACE_ID_KEY))
+            recommendation[VENUE_MESSAGE_KEY] = sent_venue
+            media_photos = recommendation.get(MEDIA_PHOTOS_KEY)
+            if media_photos:
+                self.bot.send_chat_action(self.chat_id, UPLOAD_PHOTO)
+                self.bot.send_media_group(self.chat_id, media_photos)
+            if not media_photos or len(media_photos) > 1:
+                self.bot.send_chat_action(self.chat_id, TYPING)
+                self.bot.send_message(self.chat_id, 
+                                      recommendation.get(RECOMMENDATION_TEXT_KEY))
 
 
     def get_media_photos(self, photos: list | None, text: str):
         self.bot.send_chat_action(self.chat_id, TYPING)
         media_photos = []
-        media_photo_threads = []
         if not photos:
             return media_photos
         if len(photos) > 1:
             text = None
-        print('main thread', get_ident())
-        for photo in photos:
-            media_photo_thread = Thread(target=self.get_media_photo, args=(photo, text, media_photos))
-            media_photo_thread.start()
-            media_photo_threads.append(media_photo_thread)
-        
-        for media_photo_thread in media_photo_threads:
-            media_photo_thread.join()
-        
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            futures = [executor.submit(self.get_media_photo, photo, text) for photo in photos]
+            for future in as_completed(futures):
+                media_photo = future.result()
+                media_photos.append(media_photo)
         return media_photos
 
 
-    def get_media_photo(self, photo: dict, text: str | None, media_photos: list):
-        print('child thread', get_ident())
+    def get_media_photo(self, photo: dict, text: str | None) -> InputMediaPhoto:
         params = {
             KEY: os.getenv(API_KEY),
             PHOTO_REF: photo.get(PHOTO_REF),
@@ -212,8 +214,8 @@ class Recommender:
         }
         response = requests.request(GET_REQUEST, os.getenv(PLACE_PHOTO_URL), params=params)
         image = Image.open(BytesIO(response.content))
-        media_photo = InputMediaPhoto(image, caption=text) if text else InputMediaPhoto(image)
-        media_photos.append(media_photo)
+        return InputMediaPhoto(image, caption=text) if text else InputMediaPhoto(image)
+
 
 
     def get_place_options(self, result: dict) -> str:
