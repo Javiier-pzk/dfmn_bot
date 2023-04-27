@@ -178,6 +178,7 @@ class Recommender:
                                 recommendation.get(PLACE_ADDRESS_KEY),
                                 google_place_id=recommendation.get(PLACE_ID_KEY))
             recommendation[VENUE_MESSAGE_KEY] = sent_venue
+            print('In send_recoomednation', sent_venue)
             media_photos = recommendation.get(MEDIA_PHOTOS_KEY)
             if media_photos:
                 self.bot.send_chat_action(self.chat_id, UPLOAD_PHOTO)
@@ -265,6 +266,7 @@ class Recommender:
         rand_index = randint(0, len(results) - 1)
         place_name = results[rand_index].get(PLACE_NAME_KEY)
         venue_message = results[rand_index].get(VENUE_MESSAGE_KEY)
+        print('In decision handler:', venue_message)
         self.bot.reply_to(venue_message, BOT_RECOMMENDATION_MESSAGE.format(place_name),
                           reply_markup=ReplyKeyboardRemove())
 
