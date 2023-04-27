@@ -136,6 +136,7 @@ class Recommender:
 
 
     def get_recommendation_details(self, index: int, place_id: str):
+        self.bot.send_chat_action(self.chat_id, TYPING)
         params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULT_KEY)
@@ -192,6 +193,7 @@ class Recommender:
 
 
     def get_media_photos(self, photos: list | None, text: str):
+        self.bot.send_chat_action(self.chat_id, TYPING)
         media_photos = []
         if not photos:
             return media_photos
