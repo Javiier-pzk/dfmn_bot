@@ -120,7 +120,6 @@ class Recommender:
             self.send_recommendation(recommendation)
             recommendations.append(recommendation)
                 
-        self.send_recommendations(recommendations)
         if len(recommendations) == 1:
             return
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -169,7 +168,7 @@ class Recommender:
         }
     
 
-    def send_recommendations(self, recommendation: dict):
+    def send_recommendation(self, recommendation: dict):
         place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY) + 1,
                                         name=recommendation.get(NAME_KEY))
         sent_venue = self.bot.send_venue(self.chat_id, 
