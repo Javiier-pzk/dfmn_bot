@@ -193,6 +193,7 @@ class Recommender:
 
 
     def get_media_photos(self, photos: list | None, text: str):
+        self.bot.send_chat_action(self.chat_id, TYPING)
         media_photos = []
         if not photos:
             return media_photos
@@ -207,7 +208,6 @@ class Recommender:
 
 
     def get_media_photo(self, photo: dict, text: str | None) -> InputMediaPhoto:
-        self.bot.send_chat_action(self.chat_id, TYPING)
         params = {
             KEY: self.api_key,
             PHOTO_REF: photo.get(PHOTO_REF),
