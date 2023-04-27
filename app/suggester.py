@@ -21,6 +21,7 @@ class Recommender:
         self.only_open = False
         self.num_rec = None
         self.max_workers = int(os.getenv(MAX_WORKERS))
+        self.api_key = os.getenv(API_KEY)
 
 
     def recommend(self):
@@ -96,7 +97,7 @@ class Recommender:
     def recommendation_handler(self):
         self.bot.send_chat_action(self.chat_id, TYPING)
         params = {
-            KEY: os.getenv(API_KEY),
+            KEY: self.api_key,
             KEYWORD: self.category,
             LOCATION: f'{self.latitude},{self.longitude}',
             RADIUS: self.radius,
@@ -136,7 +137,7 @@ class Recommender:
 
     def get_recommendation_details(self, index: int, place_id: str):
         self.bot.send_chat_action(self.chat_id, TYPING)
-        params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
+        params = {KEY: self.api_key, PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULT_KEY)
         price_level = result.get(PRICE_LEVEL_KEY)
@@ -192,7 +193,6 @@ class Recommender:
 
 
     def get_media_photos(self, photos: list | None, text: str):
-        self.bot.send_chat_action(self.chat_id, TYPING)
         media_photos = []
         if not photos:
             return media_photos
@@ -207,8 +207,9 @@ class Recommender:
 
 
     def get_media_photo(self, photo: dict, text: str | None) -> InputMediaPhoto:
+        self.bot.send_chat_action(self.chat_id, TYPING)
         params = {
-            KEY: os.getenv(API_KEY),
+            KEY: self.api_key,
             PHOTO_REF: photo.get(PHOTO_REF),
             MAX_HEIGHT: photo.get(HEIGHT),
             MAX_WIDTH: photo.get(WIDTH)
