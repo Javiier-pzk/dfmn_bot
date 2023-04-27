@@ -3,7 +3,7 @@ from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKey
 from app.constants import *
 import os
 import requests
-from threading import Thread
+from threading import Thread, get_ident
 from PIL import Image
 from io import BytesIO
 from random import randint
@@ -190,6 +190,7 @@ class Recommender:
             return media_photos
         if len(photos) > 1:
             text = None
+        print('main thread', get_ident())
         for photo in photos:
             media_photo_thread = Thread(target=self.get_media_photo, args=(photo, text, media_photos))
             media_photo_thread.start()
@@ -202,6 +203,7 @@ class Recommender:
 
 
     def get_media_photo(self, photo: dict, text: str | None, media_photos: list):
+        print('child thread', get_ident())
         params = {
             KEY: os.getenv(API_KEY),
             PHOTO_REF: photo.get(PHOTO_REF),
