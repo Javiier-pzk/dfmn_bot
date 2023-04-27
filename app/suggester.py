@@ -3,7 +3,6 @@ from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKey
 from app.constants import *
 import os
 import requests
-from threading import Thread
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from PIL import Image
 from io import BytesIO
