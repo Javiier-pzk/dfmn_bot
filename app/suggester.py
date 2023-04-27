@@ -65,24 +65,28 @@ class Recommender:
             self.bot.register_next_step_handler(error_message, self.radius_handler)
             return
         self.radius = int(message.text[0]) * 1000
+        keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+        buttons = [KeyboardButton(str(i)) for i in range(1, 6)]
+        keyboard.add(*buttons)
         sent_message = self.bot.send_message(
-            self.chat_id, NUM_REC_MESSAGE, reply_markup=ReplyKeyboardRemove())
+            self.chat_id, NUM_REC_MESSAGE, reply_markup=keyboard)
         self.bot.register_next_step_handler(sent_message, self.num_recommendations_handler)
 
 
     def num_recommendations_handler(self, message: Message):
-        try:
-            self.num_rec = int(message.text)
-            keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
-            yes_option = KeyboardButton(YES_TEXT)
-            no_option = KeyboardButton(NO_TEXT)
-            keyboard.add(yes_option, no_option)
-            sent_message = self.bot.send_message(self.chat_id, ONLY_OPEN_TEXT, reply_markup=keyboard)
-            self.bot.register_next_step_handler(sent_message, self.only_open_handler)
-        except ValueError:
+        accepted_values = set([i for i in range(1, 6)])
+        if message.text not in accepted_values:
             error_message = self.bot.reply_to(message, INVALID_INT_MESSAGE)
             self.bot.register_next_step_handler(error_message, self.num_recommendations_handler)
-
+            return
+        self.num_rec = int(message.text)
+        keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
+        yes_option = KeyboardButton(YES_TEXT)
+        no_option = KeyboardButton(NO_TEXT)
+        keyboard.add(yes_option, no_option)
+        sent_message = self.bot.send_message(self.chat_id, ONLY_OPEN_TEXT, reply_markup=keyboard)
+        self.bot.register_next_step_handler(sent_message, self.only_open_handler)
+            
 
     def only_open_handler(self, message: Message):
         accepted_values = set([YES_TEXT, NO_TEXT])
