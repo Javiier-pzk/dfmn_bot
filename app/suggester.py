@@ -74,7 +74,7 @@ class Recommender:
 
 
     def num_recommendations_handler(self, message: Message):
-        accepted_values = set([i for i in range(1, 6)])
+        accepted_values = set([str(i) for i in range(1, 6)])
         if message.text not in accepted_values:
             error_message = self.bot.reply_to(message, INVALID_INT_MESSAGE)
             self.bot.register_next_step_handler(error_message, self.num_recommendations_handler)
