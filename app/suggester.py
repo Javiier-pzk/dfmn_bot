@@ -115,9 +115,9 @@ class Recommender:
         recommendations = []
         for i, result in enumerate(results[:self.num_rec]):
             recommendation_details = self.get_recommendation_details(i, result.get(PLACE_ID_KEY))
+            self.send_recommendation(recommendation_details)
             recommendations.append(recommendation_details)
 
-        self.send_recommendations(recommendations)
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
         yes_option = KeyboardButton(PICK_FOR_ME_TEXT)
         no_option = KeyboardButton(PICK_MYSELF_TEXT)
@@ -164,26 +164,22 @@ class Recommender:
         }
     
 
-    def send_recommendations(self, recommendations: list):
-        recommendations.sort(key=lambda x: x.get(INDEX_KEY))
-        for recommendation in recommendations:
-            place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY) + 1,
-                                           name=recommendation.get(NAME_KEY))
-            sent_venue = self.bot.send_venue(self.chat_id,
-                                recommendation.get(RESULT_LAT_KEY),
-                                recommendation.get(RESULT_LNG_KEY),
-                                place_name, 
-                                recommendation.get(PLACE_ADDRESS_KEY),
-                                google_place_id=recommendation.get(PLACE_ID_KEY))
-            recommendation[VENUE_MESSAGE_KEY] = sent_venue
-            media_photos = recommendation.get(MEDIA_PHOTOS_KEY)
-            if media_photos:
-                self.bot.send_chat_action(self.chat_id, UPLOAD_PHOTO)
-                self.bot.send_media_group(self.chat_id, media_photos)
-            if not media_photos or len(media_photos) > 1:
-                self.bot.send_chat_action(self.chat_id, TYPING)
-                self.bot.send_message(self.chat_id, 
-                                      recommendation.get(RECOMMENDATION_TEXT_KEY))
+    def send_recommendation(self, recommendation: dict):
+        place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY) + 1,
+                                       name=recommendation.get(NAME_KEY))
+        sent_venue = self.bot.send_venue(self.chat_id, 
+            recommendation.get(RESULT_LAT_KEY),
+            recommendation.get(RESULT_LNG_KEY), place_name, 
+            recommendation.get(PLACE_ADDRESS_KEY),
+            google_place_id=recommendation.get(PLACE_ID_KEY))
+        recommendation[VENUE_MESSAGE_KEY] = sent_venue
+        media_photos = recommendation.get(MEDIA_PHOTOS_KEY)
+        if media_photos:
+            self.bot.send_chat_action(self.chat_id, UPLOAD_PHOTO)
+            self.bot.send_media_group(self.chat_id, media_photos)
+        if not media_photos or len(media_photos) > 1:
+            self.bot.send_chat_action(self.chat_id, TYPING)
+            self.bot.send_message(self.chat_id, recommendation.get(RECOMMENDATION_TEXT_KEY))
 
 
     def get_media_photos(self, photos: list | None, text: str):
