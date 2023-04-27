@@ -220,7 +220,7 @@ class Recommender:
 
 
 
-    def get_place_options(self, result: dict) -> str:
+    def get_place_options(self, result: dict) -> str | None:
         options = []
         if result.get(DINE_IN_KEY):
             options.append(DINE_IN)
@@ -230,10 +230,10 @@ class Recommender:
             options.append(DELIVERY)
         if result.get(RESERVABLE_KEY):
             options.append(RESERVABLE_KEY.capitalize())
-        return f'{COMMA} '.join(options)
+        return f'{COMMA} '.join(options) if options else None
 
      
-    def get_place_serves(self, result: dict) -> str:
+    def get_place_serves(self, result: dict) -> str | None:
         serves = []
         if result.get(SERVES_BREAKFAST_KEY):
             serves.append(BREAKFAST)
@@ -249,7 +249,7 @@ class Recommender:
             serves.append(BEER)
         if result.get(SERVES_WINE_KEY):
             serves.append(WINE)
-        return f'{COMMA} '.join(serves)
+        return f'{COMMA} '.join(serves) if serves else None
 
 
     def decision_handler(self, message: Message, results: list):
