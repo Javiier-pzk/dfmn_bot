@@ -114,7 +114,7 @@ class Recommender:
             reply_markup=ReplyKeyboardRemove())
         
         recommendations = []        
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        with ThreadPoolExecutor(max_workers=os.getenv(MAX_WORKERS)) as executor:
             futures = [
                 executor.submit(self.get_recommendation_details, i, result.get(PLACE_ID_KEY))
                     for i, result in enumerate(results[:self.num_rec])
@@ -135,7 +135,6 @@ class Recommender:
 
 
     def get_recommendation_details(self, index: int, place_id: str):
-        self.bot.send_chat_action(self.chat_id, TYPING)
         params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULT_KEY)
@@ -171,6 +170,7 @@ class Recommender:
     
 
     def send_recommendations(self, recommendations: list):
+        recommendations.sort(key=lambda x: x.get(INDEX_KEY))
         for recommendation in recommendations:
             place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY) + 1,
                                         name=recommendation.get(NAME_KEY))
@@ -191,13 +191,12 @@ class Recommender:
 
 
     def get_media_photos(self, photos: list | None, text: str):
-        self.bot.send_chat_action(self.chat_id, TYPING)
         media_photos = []
         if not photos:
             return media_photos
         if len(photos) > 1:
             text = None
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        with ThreadPoolExecutor(max_workers=os.getenv(MAX_WORKERS)) as executor:
             futures = [executor.submit(self.get_media_photo, photo, text) for photo in photos]
             for future in as_completed(futures):
                 media_photo = future.result()
