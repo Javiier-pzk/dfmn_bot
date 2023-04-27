@@ -111,20 +111,29 @@ class Recommender:
         self.bot.send_message(self.chat_id,RECOMMENDATIONS_MESSAGE.format(
                 num_rec=min(self.num_rec, len(results)),category=self.category.lower()),
             reply_markup=ReplyKeyboardRemove())
+        
+        recommendation_threads, recommendations = [], []
         for i, result in enumerate(results[:self.num_rec]):
-            self.send_recommendation(i, result.get(PLACE_ID_KEY))
+            recommendation_thread = Thread(target=self.get_recommendation_details,
+                args=(i, result.get(PLACE_ID_KEY), recommendations))
+            recommendation_thread.start()
+            recommendation_threads.append(recommendation_thread)
+
+        for recommendation_thread in recommendation_threads:
+            recommendation_thread.join()
+
+        self.send_recommendations(recommendations)
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
         yes_option = KeyboardButton(PICK_FOR_ME_TEXT)
         no_option = KeyboardButton(PICK_MYSELF_TEXT)
         keyboard.add(yes_option, no_option)
         sent_mesasge = self.bot.send_message(
             self.chat_id, PICK_RANDOM_RECOMMENDATIONS_MESSAGE, reply_markup=keyboard)
-        self.bot.register_next_step_handler(
-            sent_mesasge, self.decision_handler, results[:self.num_rec])
+        self.bot.register_next_step_handler(sent_mesasge, 
+                                            self.decision_handler, recommendations)
 
 
-    def send_recommendation(self, index: int, place_id: str):
-        self.bot.send_chat_action(self.chat_id, TYPING)
+    def get_recommendation_details(self, index: int, place_id: str, recommendations: list):
         params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULT_KEY)
@@ -147,20 +156,41 @@ class Recommender:
                 open_now=is_open, opening_hours=opening_hours)
         photos = result.get(PHOTOS_KEY)
         media_photos = self.get_media_photos(photos, text)
-        place_name = PLACE_NAME.format(
-                index=index + 1, name=result.get(NAME_KEY))
+        place_name = PLACE_NAME.format(index=index + 1, name=result.get(NAME_KEY))
         result_lat = result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY)
         result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
         place_address = result.get(FORMATTED_ADDRESS_KEY)
-        place_id = result.get(PLACE_ID_KEY)
-        self.bot.send_venue(self.chat_id, result_lat, result_lng,
-                            place_name, place_address, google_place_id=place_id)
-        if media_photos:
-            self.bot.send_chat_action(self.chat_id, UPLOAD_PHOTO)
-            self.bot.send_media_group(self.chat_id, media_photos)
-        if not media_photos or len(media_photos) > 1:
-            self.bot.send_chat_action(self.chat_id, TYPING)
-            self.bot.send_message(self.chat_id, text)
+        recommendation = {
+            INDEX_KEY: index,
+            RECOMMENDATION_TEXT_KEY: text,
+            MEDIA_PHOTOS_KEY: media_photos,
+            PLACE_NAME_KEY: place_name,
+            PLACE_ID_KEY: place_id,
+            PLACE_ADDRESS_KEY: place_address,
+            RESULT_LAT_KEY: result_lat,
+            RESULT_LNG_KEY: result_lng
+        }
+        recommendations.append(recommendation)
+    
+
+    def send_recommendations(self, recommendations: list):
+        recommendations.sort(key=lambda x: x.get(INDEX_KEY))
+        for recommendation in recommendations:
+            sent_venue = self.bot.send_venue(self.chat_id,
+                                recommendation.get(RESULT_LAT_KEY),
+                                recommendation.get(RESULT_LNG_KEY),
+                                recommendation.get(PLACE_NAME_KEY), 
+                                recommendation.get(PLACE_ADDRESS_KEY),
+                                google_place_id=recommendation.get(PLACE_ID_KEY))
+            recommendation[VENUE_MESSAGE_KEY] = sent_venue
+            media_photos = recommendation.get(MEDIA_PHOTOS_KEY)
+            if media_photos:
+                self.bot.send_chat_action(self.chat_id, UPLOAD_PHOTO)
+                self.bot.send_media_group(self.chat_id, media_photos)
+            if not media_photos or len(media_photos) > 1:
+                self.bot.send_chat_action(self.chat_id, TYPING)
+                self.bot.send_message(self.chat_id, 
+                                      recommendation.get(RECOMMENDATION_TEXT_KEY))
 
 
     def get_media_photos(self, photos: list | None, text: str):
@@ -233,9 +263,12 @@ class Recommender:
             self.bot.register_next_step_handler(error_message, self.decision_handler, results)
             return
         if message.text == PICK_MYSELF_TEXT:
-            self.bot.send_message(self.chat_id,SIGN_OFF_TEXT, reply_markup=ReplyKeyboardRemove())
+            self.bot.send_message(self.chat_id,SIGN_OFF_TEXT,
+                                  reply_markup=ReplyKeyboardRemove())
             return
         rand_index = randint(0, len(results) - 1)
-        self.bot.send_message(
-            self.chat_id, BOT_RECOMMENDATION_MESSAGE, reply_markup=ReplyKeyboardRemove())
-        self.send_recommendation(rand_index, results[rand_index].get(PLACE_ID_KEY))
+        place_name = results[rand_index].get(PLACE_NAME_KEY)
+        venue_message = results[rand_index].get(VENUE_MESSAGE_KEY)
+        self.bot.reply_to(venue_message, BOT_RECOMMENDATION_MESSAGE.format(place_name),
+                          reply_markup=ReplyKeyboardRemove())
+

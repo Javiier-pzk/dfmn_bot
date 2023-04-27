@@ -108,7 +108,7 @@ DOLLAR_SIGN = '$'
 PICK_RANDOM_RECOMMENDATIONS_MESSAGE = 'Do you want me to pick a random option for you?'
 PICK_FOR_ME_TEXT = "Yes, pick for me!"
 PICK_MYSELF_TEXT = "No, I'll pick myself!"
-BOT_RECOMMENDATION_MESSAGE = 'My recommendation is:'
+BOT_RECOMMENDATION_MESSAGE = 'My recommendation is: {place_name}'
 SIGN_OFF_TEXT = 'Alright! Have a nice day 👋'
 TYPING = 'typing'
 UPLOAD_PHOTO = 'upload_photo'
@@ -119,6 +119,14 @@ COMMANDS = f"""
 ➡️ /{RNG_COMMAND} -> {RNG_COMMAND_DESC}
 ➡️ /{DICE_COMMAND} -> {DICE_COMMAND_DESC}
 """
+RECOMMENDATION_TEXT_KEY = 'recommendation_text'
+INDEX_KEY = 'index'
+MEDIA_PHOTOS_KEY = 'media_photos'
+RESULT_LAT_KEY = 'result_lat'
+RESULT_LNG_KEY = 'result_lng'
+PLACE_ADDRESS_KEY = 'place_address'
+PLACE_NAME_KEY = 'place_name'
+VENUE_MESSAGE_KEY = 'venue_message'
 RECOMMENDATIONS_TEXT = """
 Overview: {overview}
 
