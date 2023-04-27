@@ -131,6 +131,8 @@ class Recommender:
         keyboard.add(yes_option, no_option)
         sent_mesasge = self.bot.send_message(
             self.chat_id, PICK_RANDOM_RECOMMENDATIONS_MESSAGE, reply_markup=keyboard)
+        if len(recommendations) == 1:
+            return
         self.bot.register_next_step_handler(sent_mesasge, 
                                             self.decision_handler, recommendations)
 
