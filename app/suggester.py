@@ -21,6 +21,7 @@ class Recommender:
         self.radius = None
         self.only_open = False
         self.num_rec = None
+        self.max_workers = int(os.getenv(MAX_WORKERS))
 
 
     def recommend(self):
@@ -114,7 +115,7 @@ class Recommender:
             reply_markup=ReplyKeyboardRemove())
         
         recommendations = []        
-        with ThreadPoolExecutor(max_workers=os.getenv(MAX_WORKERS)) as executor:
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             futures = [
                 executor.submit(self.get_recommendation_details, i, result.get(PLACE_ID_KEY))
                     for i, result in enumerate(results[:self.num_rec])
@@ -196,7 +197,7 @@ class Recommender:
             return media_photos
         if len(photos) > 1:
             text = None
-        with ThreadPoolExecutor(max_workers=os.getenv(MAX_WORKERS)) as executor:
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             futures = [executor.submit(self.get_media_photo, photo, text) for photo in photos]
             for future in as_completed(futures):
                 media_photo = future.result()
