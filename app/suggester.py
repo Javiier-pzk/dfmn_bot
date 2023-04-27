@@ -112,15 +112,10 @@ class Recommender:
                 num_rec=min(self.num_rec, len(results)),category=self.category.lower()),
             reply_markup=ReplyKeyboardRemove())
         
-        recommendation_threads, recommendations = [], []
+        recommendations = []
         for i, result in enumerate(results[:self.num_rec]):
-            recommendation_thread = Thread(target=self.get_recommendation_details,
-                args=(i, result.get(PLACE_ID_KEY), recommendations))
-            recommendation_thread.start()
-            recommendation_threads.append(recommendation_thread)
-
-        for recommendation_thread in recommendation_threads:
-            recommendation_thread.join()
+            recommendation_details = self.get_recommendation_details(i, result.get(PLACE_ID_KEY))
+            recommendations.append(recommendation_details)
 
         self.send_recommendations(recommendations)
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -133,7 +128,8 @@ class Recommender:
                                             self.decision_handler, recommendations)
 
 
-    def get_recommendation_details(self, index: int, place_id: str, recommendations: list):
+    def get_recommendation_details(self, index: int, place_id: str):
+        self.bot.send_chat_action(self.chat_id, TYPING)
         params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULT_KEY)
@@ -160,7 +156,7 @@ class Recommender:
         result_lat = result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY)
         result_lng = result.get(GEOMETRY_KEY).get(LOCATION).get(LNG_KEY)
         place_address = result.get(FORMATTED_ADDRESS_KEY)
-        recommendation = {
+        return {
             INDEX_KEY: index,
             RECOMMENDATION_TEXT_KEY: text,
             MEDIA_PHOTOS_KEY: media_photos,
@@ -170,7 +166,6 @@ class Recommender:
             RESULT_LAT_KEY: result_lat,
             RESULT_LNG_KEY: result_lng
         }
-        recommendations.append(recommendation)
     
 
     def send_recommendations(self, recommendations: list):
@@ -194,6 +189,7 @@ class Recommender:
 
 
     def get_media_photos(self, photos: list | None, text: str):
+        self.bot.send_chat_action(self.chat_id, TYPING)
         media_photos = []
         media_photo_threads = []
         if not photos:
