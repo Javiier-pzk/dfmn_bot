@@ -3,6 +3,7 @@ from telebot.types import Message, ReplyKeyboardMarkup, KeyboardButton, ReplyKey
 from app.constants import *
 import os
 import requests
+from threading import Thread
 from PIL import Image
 from io import BytesIO
 from random import randint
@@ -145,7 +146,7 @@ class Recommender:
                 contact_info=contact_info ,website=website, options=options, serves=serves,
                 open_now=is_open, opening_hours=opening_hours)
         photos = result.get(PHOTOS_KEY)
-        media_photos = self.get_place_photos(photos, text)
+        media_photos = self.get_media_photos(photos, text)
         place_name = PLACE_NAME.format(
                 index=index + 1, name=result.get(NAME_KEY))
         result_lat = result.get(GEOMETRY_KEY).get(LOCATION).get(LAT_KEY)
@@ -162,23 +163,35 @@ class Recommender:
             self.bot.send_message(self.chat_id, text)
 
 
-    def get_place_photos(self, photos: list | None, text: str):
+    def get_media_photos(self, photos: list | None, text: str):
         media_photos = []
+        media_photo_threads = []
         if not photos:
             return media_photos
+        if len(photos) > 1:
+            text = None
         for photo in photos:
-            params = {
-                KEY: os.getenv(API_KEY),
-                PHOTO_REF: photo.get(PHOTO_REF),
-                MAX_HEIGHT: photo.get(HEIGHT),
-                MAX_WIDTH: photo.get(WIDTH)
-            }
-            response = requests.request(
-                GET_REQUEST, os.getenv(PLACE_PHOTO_URL), params=params)
-            image = Image.open(BytesIO(response.content))
-            media_photo = InputMediaPhoto(image, caption=text) if len(photos) == 1 else InputMediaPhoto(image)
-            media_photos.append(media_photo)
+            media_photo_thread = Thread(target=self.get_media_photo, args=(photo, text, media_photos))
+            media_photo_thread.start()
+            media_photo_threads.append(media_photo_thread)
+        
+        for media_photo_thread in media_photo_threads:
+            media_photo_thread.join()
+        
         return media_photos
+
+
+    def get_media_photo(photo: dict, text: str | None, media_photos: list):
+        params = {
+            KEY: os.getenv(API_KEY),
+            PHOTO_REF: photo.get(PHOTO_REF),
+            MAX_HEIGHT: photo.get(HEIGHT),
+            MAX_WIDTH: photo.get(WIDTH)
+        }
+        response = requests.request(GET_REQUEST, os.getenv(PLACE_PHOTO_URL), params=params)
+        image = Image.open(BytesIO(response.content))
+        media_photo = InputMediaPhoto(image, caption=text) if text else InputMediaPhoto(image)
+        media_photos.append(media_photo)
 
 
     def get_place_options(self, result: dict) -> str:
