@@ -167,7 +167,7 @@ class Recommender:
     def send_recommendations(self, recommendations: list):
         recommendations.sort(key=lambda x: x.get(INDEX_KEY))
         for recommendation in recommendations:
-            place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY),
+            place_name = PLACE_NAME.format(index=recommendation.get(INDEX_KEY) + 1,
                                            name=recommendation.get(NAME_KEY))
             sent_venue = self.bot.send_venue(self.chat_id,
                                 recommendation.get(RESULT_LAT_KEY),
