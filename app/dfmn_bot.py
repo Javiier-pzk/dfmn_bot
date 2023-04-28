@@ -64,6 +64,7 @@ def suggest(message):
 
 @dfmn_bot.message_handler(content_types=[LOCATION], func=lambda m: m.chat.type == GROUP)
 def handle_location_message(message):
+	print('Hello!')
 	global recommender
 	if not recommender:
 		return

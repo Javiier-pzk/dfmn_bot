@@ -35,10 +35,12 @@ class Recommender:
 
 
     def handle_group_chat_location(self, message: Message):
+        print('handle_group', self.location_prompt_message)
         if not self.location_prompt_message:
             return
         if not hasattr(self.location_prompt_message, NEXT_STEP_HANDLER):
             return
+        print('Calling')
         self.location_handler(message)
 
 
