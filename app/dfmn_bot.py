@@ -28,6 +28,7 @@ dfmn_bot.set_my_commands(commands)
 dfmn_bot.set_my_description(BOT_DESC)
 dfmn_bot.remove_webhook()
 dfmn_bot.set_webhook(url=WEBHOOK_URL)
+recommender = None
 
 @dfmn_bot.message_handler(commands=[START_COMMAND])
 def send_start_message(message):
@@ -56,7 +57,17 @@ def send_dice(message):
 
 @dfmn_bot.message_handler(commands=[SUGGEST_COMMAND])
 def suggest(message):
-	Recommender(dfmn_bot, message.chat.id).recommend()
+	global recommender
+	recommender = Recommender(dfmn_bot, message.chat.id)
+	recommender.recommend()
+
+
+@dfmn_bot.message_handler(content_types=[LOCATION], func=lambda m: m.chat.type == GROUP)
+def handle_location_message(message):
+	global recommender
+	if not recommender:
+		return
+	recommender.handle_group_chat_location(message)
 
 
 @dfmn_bot.message_handler(func=lambda m :True)
