@@ -20,7 +20,7 @@ class Recommender:
         self.radius = None
         self.only_open = False
         self.num_rec = None
-        
+
 
     def recommend(self):
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -110,7 +110,8 @@ class Recommender:
         results = filter(lambda x: x.get(BUSINESS_STATUS_KEY) == OPERATIONAL, results)
         results = sorted(results, key=lambda result: result.get(RATING_KEY), reverse=True)
         if not results:
-            self.bot.send_message(self.chat_id, ZERO_RECOMMENDATIONS_MESSAGE)
+            self.bot.send_message(self.chat_id,
+                ZERO_RECOMMENDATIONS_MESSAGE, reply_markup=ReplyKeyboardRemove())
             return
         self.bot.send_message(self.chat_id, 
             RECOMMENDATIONS_MESSAGE.format(num_rec=min(self.num_rec, len(results))),
