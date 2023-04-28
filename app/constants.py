@@ -161,3 +161,4 @@ Press the start button to see what I can do!
 """
 NEW_LINE = '\n'
 MAX_WORKERS = 'MAX_WORKERS'
+EMPTY_STRING = ''

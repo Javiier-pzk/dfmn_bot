@@ -20,9 +20,6 @@ class Recommender:
         self.radius = None
         self.only_open = False
         self.num_rec = None
-        self.max_workers = int(os.getenv(MAX_WORKERS))
-        self.api_key = os.getenv(API_KEY)
-
 
     def recommend(self):
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -101,7 +98,7 @@ class Recommender:
     def recommendation_handler(self):
         self.bot.send_chat_action(self.chat_id, TYPING)
         params = {
-            KEY: self.api_key,
+            KEY: os.getenv(API_KEY),
             KEYWORD: self.category,
             LOCATION: f'{self.latitude},{self.longitude}',
             RADIUS: self.radius,
@@ -138,31 +135,42 @@ class Recommender:
 
     def get_recommendation_details(self, index: int, place_id: str):
         self.bot.send_chat_action(self.chat_id, TYPING)
-        params = {KEY: self.api_key, PLACE_ID_KEY: place_id}
+        params = {KEY: os.getenv(API_KEY), PLACE_ID_KEY: place_id}
         response = requests.request(GET_REQUEST, os.getenv(PLACE_DETAILS_URL), params=params)
         result = response.json().get(RESULT_KEY)
-        price_level = result.get(PRICE_LEVEL_KEY)
-        price_level_str = DOLLAR_SIGN * price_level if price_level else None
-        rating = result.get(RATING_KEY)
-        user_ratings_total = result.get(USER_RATINGS_TOTAL_KEY)
-        is_open = result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)
-        opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
-        contact_info = result.get(PHONE_NUMBER_KEY)
-        website = result.get(WEBSITE_KEY)
         place_editorial_summary = result.get(EDITORIAL_SUMMARY_KEY)
         place_overview = place_editorial_summary.get(OVERVIEW_KEY) if place_editorial_summary else None
+        recommendation_text = EMPTY_STRING
+        if place_overview:
+            recommendation_text += place_overview + NEW_LINE
+        rating = result.get(RATING_KEY)
+        user_ratings_total = result.get(USER_RATINGS_TOTAL_KEY)
+        recommendation_text += NEW_LINE + rating + NEW_LINE
+        recommendation_text += NEW_LINE + user_ratings_total + NEW_LINE
+        price_level = result.get(PRICE_LEVEL_KEY)
+        if price_level:
+            recommendation_text += NEW_LINE + (DOLLAR_SIGN * price_level) + NEW_LINE
+        contact_info = result.get(PHONE_NUMBER_KEY)
+        if contact_info:
+            recommendation_text += NEW_LINE + contact_info + NEW_LINE
+        website = result.get(WEBSITE_KEY)
+        if website:
+            recommendation_text += NEW_LINE + website + NEW_LINE
         options = self.get_place_options(result)
+        if options:
+            recommendation_text += NEW_LINE + options + NEW_LINE
         serves = self.get_place_serves(result)
-        text = RECOMMENDATIONS_TEXT.format(
-                overview=place_overview, rating=rating, 
-                user_ratings_total=user_ratings_total, price_level=price_level_str,
-                contact_info=contact_info ,website=website, options=options, serves=serves,
-                open_now=is_open, opening_hours=opening_hours)
+        if serves:
+            recommendation_text += NEW_LINE + serves + NEW_LINE
+        is_open = result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)
+        opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
+        recommendation_text += NEW_LINE + is_open + NEW_LINE
+        recommendation_text += NEW_LINE + opening_hours + NEW_LINE
         photos = result.get(PHOTOS_KEY)
-        media_photos = self.get_media_photos(photos, text)
+        media_photos = self.get_media_photos(photos, recommendation_text)
         return {
             INDEX_KEY: index,
-            RECOMMENDATION_TEXT_KEY: text,
+            RECOMMENDATION_TEXT_KEY: recommendation_text,
             MEDIA_PHOTOS_KEY: media_photos,
             NAME_KEY: result.get(NAME_KEY),
             PLACE_ID_KEY: place_id,
@@ -198,7 +206,7 @@ class Recommender:
             return media_photos
         if len(photos) > 1:
             text = None
-        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+        with ThreadPoolExecutor(max_workers=int(os.getenv(MAX_WORKERS))) as executor:
             futures = [executor.submit(self.get_media_photo, photo, text) for photo in photos]
             for future in as_completed(futures):
                 media_photo = future.result()
@@ -208,7 +216,7 @@ class Recommender:
 
     def get_media_photo(self, photo: dict, text: str | None) -> InputMediaPhoto:
         params = {
-            KEY: self.api_key,
+            KEY: os.getenv(API_KEY),
             PHOTO_REF: photo.get(PHOTO_REF),
             MAX_HEIGHT: photo.get(HEIGHT),
             MAX_WIDTH: photo.get(WIDTH)
