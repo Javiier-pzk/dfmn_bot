@@ -69,7 +69,7 @@ MAX_HEIGHT = 'maxheight'
 MAX_WIDTH = 'maxwidth'
 NUM_REC_MESSAGE = 'How many recommendations do you want to see?'
 ZERO_RECOMMENDATIONS_MESSAGE = 'Sorry, I am unable to find any recommendations that fit your criteria 😕'
-RECOMMENDATIONS_MESSAGE = "Here are the top {num_rec} {category} recommendations near your input location:"
+RECOMMENDATIONS_MESSAGE = "Here are the top {num_rec} recommendations near your input location:"
 PLACE_ID_KEY = 'place_id'
 FORMATTED_ADDRESS_KEY = 'formatted_address'
 PHONE_NUMBER_KEY = 'international_phone_number'
@@ -133,6 +133,7 @@ WEBSITE_TEXT = 'Website: '
 OPTIONS_TEXT = 'Options: '
 SERVES_TEXT = 'Serves: '
 IS_OPEN_TEXT = 'Open now: '
+GROUP = 'group'
 OPENING_HOURS_TEXT = 'Opening hours:\n'
 START_MESSAGE = f"""
 Here are some things I can do:
