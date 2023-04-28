@@ -124,6 +124,16 @@ INDEX_KEY = 'index'
 MEDIA_PHOTOS_KEY = 'media_photos'
 VENUE_MESSAGE_KEY = 'venue_message'
 PLACE_NAME = '{index}. {name}'
+OVERVIEW_TEXT = 'Overview:'
+RATING_TEXT = 'Rating:'
+USER_RATINGS_TOTAL_TEXT = 'Total user ratings: '
+PRICE_LEVEL_TEXT = 'Price level: '
+CONTACT_INFO_TEXT = 'Contact info: '
+WEBSITE_TEXT = 'Website: '
+OPTIONS_TEXT = 'Options: '
+SERVES_TEXT = 'Serves: '
+IS_OPEN_TEXT = 'Open now: '
+OPENING_HOURS_TEXT = 'Opening hours: '
 START_MESSAGE = f"""
 Here are some things I can do:
 {COMMANDS}

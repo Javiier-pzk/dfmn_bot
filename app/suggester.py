@@ -142,30 +142,30 @@ class Recommender:
         place_overview = place_editorial_summary.get(OVERVIEW_KEY) if place_editorial_summary else None
         recommendation_text = EMPTY_STRING
         if place_overview:
-            recommendation_text += place_overview + NEW_LINE
+            recommendation_text += OVERVIEW_TEXT + place_overview + NEW_LINE
         rating = result.get(RATING_KEY)
+        recommendation_text += NEW_LINE + RATING_TEXT + str(rating) + NEW_LINE
         user_ratings_total = result.get(USER_RATINGS_TOTAL_KEY)
-        recommendation_text += NEW_LINE + str(rating) + NEW_LINE
-        recommendation_text += NEW_LINE + str(user_ratings_total) + NEW_LINE
+        recommendation_text += NEW_LINE + USER_RATINGS_TOTAL_TEXT + str(user_ratings_total) + NEW_LINE
         price_level = result.get(PRICE_LEVEL_KEY)
         if price_level:
-            recommendation_text += NEW_LINE + (DOLLAR_SIGN * price_level) + NEW_LINE
+            recommendation_text += NEW_LINE + PRICE_LEVEL_TEXT + (DOLLAR_SIGN * price_level) + NEW_LINE
         contact_info = result.get(PHONE_NUMBER_KEY)
         if contact_info:
-            recommendation_text += NEW_LINE + contact_info + NEW_LINE
+            recommendation_text += NEW_LINE + CONTACT_INFO_TEXT + contact_info + NEW_LINE
         website = result.get(WEBSITE_KEY)
         if website:
-            recommendation_text += NEW_LINE + website + NEW_LINE
+            recommendation_text += NEW_LINE + WEBSITE_TEXT + website + NEW_LINE
         options = self.get_place_options(result)
         if options:
-            recommendation_text += NEW_LINE + options + NEW_LINE
+            recommendation_text += NEW_LINE + OPTIONS_TEXT + options + NEW_LINE
         serves = self.get_place_serves(result)
         if serves:
-            recommendation_text += NEW_LINE + serves + NEW_LINE
+            recommendation_text += NEW_LINE + SERVES_TEXT + serves + NEW_LINE
         is_open = YES_TEXT if result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY) else NO_TEXT
+        recommendation_text += NEW_LINE + IS_OPEN_TEXT + is_open + NEW_LINE
         opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
-        recommendation_text += NEW_LINE + is_open + NEW_LINE
-        recommendation_text += NEW_LINE + opening_hours
+        recommendation_text += NEW_LINE + OPENING_HOURS_TEXT + opening_hours
         photos = result.get(PHOTOS_KEY)
         media_photos = self.get_media_photos(photos, recommendation_text)
         return {
