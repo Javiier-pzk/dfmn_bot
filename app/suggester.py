@@ -165,7 +165,8 @@ class Recommender:
         is_open = result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)
         opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
         recommendation_text += NEW_LINE + is_open + NEW_LINE
-        recommendation_text += NEW_LINE + opening_hours + NEW_LINE
+        recommendation_text += NEW_LINE + opening_hours
+        print('reco text', recommendation_text)
         photos = result.get(PHOTOS_KEY)
         media_photos = self.get_media_photos(photos, recommendation_text)
         return {

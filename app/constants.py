@@ -123,28 +123,6 @@ RECOMMENDATION_TEXT_KEY = 'recommendation_text'
 INDEX_KEY = 'index'
 MEDIA_PHOTOS_KEY = 'media_photos'
 VENUE_MESSAGE_KEY = 'venue_message'
-RECOMMENDATIONS_TEXT = """
-Overview: {overview}
-
-Rating: {rating}
-
-Total user ratings: {user_ratings_total}
-
-Price level: {price_level}
-
-Contact info: {contact_info}
-
-Website: {website}
-
-Options: {options}
-
-Serves: {serves}
-
-Open now: {open_now}
-
-Opening hours: 
-{opening_hours}
-"""
 PLACE_NAME = '{index}. {name}'
 START_MESSAGE = f"""
 Here are some things I can do:
