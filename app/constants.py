@@ -133,7 +133,6 @@ WEBSITE_TEXT = 'Website: '
 OPTIONS_TEXT = 'Options: '
 SERVES_TEXT = 'Serves: '
 IS_OPEN_TEXT = 'Open now: '
-GROUP = 'group'
 OPENING_HOURS_TEXT = 'Opening hours:\n'
 START_MESSAGE = f"""
 Here are some things I can do:
@@ -151,4 +150,3 @@ Press the start button to see what I can do!
 NEW_LINE = '\n'
 MAX_WORKERS = 'MAX_WORKERS'
 EMPTY_STRING = ''
-NEXT_STEP_HANDLER = 'next_step_handler'

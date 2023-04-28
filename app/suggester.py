@@ -20,7 +20,7 @@ class Recommender:
         self.radius = None
         self.only_open = False
         self.num_rec = None
-        self.location_prompt_message = None 
+        
 
     def recommend(self):
         keyboard = ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -34,22 +34,11 @@ class Recommender:
         self.bot.register_next_step_handler(sent_message, self.category_handler)
 
 
-    def handle_group_chat_location(self, message: Message):
-        print('handle_group', self.location_prompt_message)
-        if not self.location_prompt_message:
-            return
-        if not hasattr(self.location_prompt_message, NEXT_STEP_HANDLER):
-            return
-        print('Calling')
-        self.location_handler(message)
-
-
     def category_handler(self, message: Message):
         self.category = message.text
         sent_message = self.bot.send_message(
             self.chat_id, LOCATION_TEXT, reply_markup=ReplyKeyboardRemove())
         self.bot.register_next_step_handler(sent_message, self.location_handler)
-        self.location_prompt_message = sent_message
 
 
     def location_handler(self, message: Message):
@@ -65,7 +54,6 @@ class Recommender:
         keyboard.add(*buttons)
         sent_message = self.bot.send_message(self.chat_id, RADIUS_TEXT, reply_markup=keyboard)
         self.bot.register_next_step_handler(sent_message, self.radius_handler)
-        self.location_prompt_message = None
 
 
     def radius_handler(self, message: Message):
