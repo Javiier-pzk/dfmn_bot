@@ -143,37 +143,29 @@ class Recommender:
         recommendation_text = EMPTY_STRING
         if place_overview:
             recommendation_text += place_overview + NEW_LINE
-        print('reco text', recommendation_text)
         rating = result.get(RATING_KEY)
         user_ratings_total = result.get(USER_RATINGS_TOTAL_KEY)
-        recommendation_text += NEW_LINE + rating + NEW_LINE
-        recommendation_text += NEW_LINE + user_ratings_total + NEW_LINE
-        print('reco text', recommendation_text)
+        recommendation_text += NEW_LINE + str(rating) + NEW_LINE
+        recommendation_text += NEW_LINE + str(user_ratings_total) + NEW_LINE
         price_level = result.get(PRICE_LEVEL_KEY)
         if price_level:
             recommendation_text += NEW_LINE + (DOLLAR_SIGN * price_level) + NEW_LINE
-        print('reco text', recommendation_text)
         contact_info = result.get(PHONE_NUMBER_KEY)
         if contact_info:
             recommendation_text += NEW_LINE + contact_info + NEW_LINE
-        print('reco text', recommendation_text)
         website = result.get(WEBSITE_KEY)
         if website:
             recommendation_text += NEW_LINE + website + NEW_LINE
-        print('reco text', recommendation_text)
         options = self.get_place_options(result)
         if options:
             recommendation_text += NEW_LINE + options + NEW_LINE
-        print('reco text', recommendation_text)
         serves = self.get_place_serves(result)
         if serves:
             recommendation_text += NEW_LINE + serves + NEW_LINE
-        print('reco text', recommendation_text)
-        is_open = result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY)
+        is_open = YES_TEXT if result.get(OPENING_HOURS_KEY).get(OPEN_NOW_KEY) else NO_TEXT
         opening_hours = NEW_LINE.join(result.get(OPENING_HOURS_KEY).get(WEEKDAY_TEXT_KEY))
         recommendation_text += NEW_LINE + is_open + NEW_LINE
         recommendation_text += NEW_LINE + opening_hours
-        print('final reco text', recommendation_text)
         photos = result.get(PHOTOS_KEY)
         media_photos = self.get_media_photos(photos, recommendation_text)
         return {
