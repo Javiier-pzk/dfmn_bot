@@ -1,11 +1,12 @@
 ## dfmn_bot
-[dfmn_bot](https://t.me/dfmn_bot) is a telegram bot that helps you make decisions or provides recommendations for you! (Group chats are not supported at the moment)
+[dfmn_bot](https://t.me/dfmn_bot) is a telegram bot that helps you make decisions or provides recommendations for you!
 
 ### Demo
 ![ezgif com-resize-2](https://user-images.githubusercontent.com/85099754/234489111-93b4d1be-4386-4efb-be9f-994bf387c1d8.gif)
 
 ### Usage
-Access the bot through this link: https://t.me/dfmn_bot or search for `@dfmn_bot` on telegram!
+`dfmn_bot` is supported in both private messages and group chats. <br>
+You can access the bot through this link: https://t.me/dfmn_bot or search for `@dfmn_bot` on telegram!
 
 ### Features
 * `/suggest`: Get suggestions on any category of your choice. For example, food, malls, tourist attractions etc.
@@ -17,7 +18,6 @@ Access the bot through this link: https://t.me/dfmn_bot or search for `@dfmn_bot
 #### Coming soon
 * Ability to filter based on price range in the `/suggest` command
 * Cleaner way of getting filters in the `/suggest` command
-* Group chat support
 * A `/abort` command to reset any ongoing conversation with the bot
 
 ### Built with
@@ -27,7 +27,8 @@ Access the bot through this link: https://t.me/dfmn_bot or search for `@dfmn_bot
 * [python3.10.9](https://www.python.org/downloads/)
 * [Heroku](https://www.heroku.com) and [Heroku cli](https://devcenter.heroku.com/articles/heroku-cli)
 
-
+### Feedback
+Any bug reports or suggestions for new features are always welcomed. Please feel free to log them [here](https://github.com/Javiier-pzk/dfmn_bot/issues).
 
 
 
